@@ -1,0 +1,3 @@
+[submodule "krakenapi"]
+	path = krakenapi
+	url = https://github.com/voidloop/krakenapi.git
