@@ -26,85 +26,67 @@ class kraken_interface
 
   std::string get_server_time();
 
-  std::string get_asset_info();
+  std::string get_asset_info(const KAPI::Input& in);
 
-  std::string get_tradable_pairs();
+  std::string get_tradable_pairs(const KAPI::Input& in);
 
   std::string get_ticker_info(const std::string& pair);
 
-  std::string get_ohlc_data();
+  std::string get_ohlc_data(const KAPI::Input& in);
 
-  std::string get_order_book(const std::string& pair, const boost::optioanl<int>& count);
+  std::string get_order_book(const KAPI::Input& in);
 
-  std::string get_recent_trades(const std::string& pair, const boost::optioanl<boost::datetime>& since) ;
+  std::string get_recent_trades(const KAPI::Input& in) ;
 
-  std::string get_recent_spread_data(const std::string& pair, const boost::optioanl<boost::datetime>& since);
+  std::string get_recent_spread_data(const KAPI::Input& in);
 
-  std::string get_account_balance();
+  std::string get_account_balance(const KAPI::Input& in);
 
-  std::string get_trade_balance(const boost::optoinal<std::string>& aclass, const std::string& asset);
+  std::string get_trade_balance(const KAPI::Input& in);
 
-  std::string get_open_orders(const boost::optoinal<bool> trades, const std::string& userref);
+  std::string get_open_orders(const KAPI::Input& in);
 
-  std::string get_closed_orders(const boost::optiona<bool> trades,
-                                const boost::optional<std::string> userref,
-                                const boost::optional<int> start,
-                                const boost::optional<int> end,
-                                const std::string& ofs,
-                                const boost::optional<string> closetime); 
+  std::string get_closed_orders(const KAPI::Input in);
 
-  std::string query_orders_info(const boost::optiona<bool> trades,
-                                const boost::optional<std::string> userref,
-                                const std::string& txid);
+  std::string query_orders_info(const KAPI::Input in);
 
-  std::string get_trades_history();
+  std::string get_trades_history(const KAPI::Input& in);
 
-  std::string query_trades_info();
+  std::string query_trades_info(const KAPI::Input& in);
 
-  std::string get_open_positions();
+  std::string get_open_positions(const KAPI::Input& in);
 
-  std::string get_ledgers_info();
+  std::string get_ledgers_info(const KAPI::Input& in);
 
-  std::string query_ledgers();
+  std::string query_ledgers(const KAPI::Input& in);
 
-  std::string get_trade_volume();
+  std::string get_trade_volume(const KAPI::Input& in);
 
-  std::string add_standard_order(const std::string& pair,
-                                 const std::string& type,
-                                 const std::string& ordertype,
-                                 const boost::optional<double>& price,
-                                 const boost::optional<double>& price2,
-                                 const double volume,
-                                 const boost::optional<std::string> leverage,
-                                 const boost::optional<std::string> oflags,
-                                 const boost::optional<int> starttm,
-                                 const boost::optional<int> expiretm,
-                                 const boost::optional<std::string>  userref,
-                                 const boost::optional<bool> validate = true);
+  std::string add_standard_order(const KAPI::Input& in);
 
-  std::string cancel_open_order(const std::string& txid);
+  std::string cancel_open_order(const KAPI::Input& in);
 
-  std::string deposit_methods();
+  std::string deposit_methods(const KAPI::Input& in);
 
-  std::string deposit_addresses();
+  std::string deposit_addresses(const KAPI::Input& in);
 
-  std::string deposit_status();
+  std::string deposit_status(const KAPI::Input& in);
 
-  std::string get_withdrawal_info();
+  std::string get_withdrawal_info(const KAPI::Input& in);
 
-  std::string withdraw_funds();
+  std::string withdraw_funds(const KAPI::Input& in);
 
-  std::string withdraw_status();
+  std::string withdraw_status(const KAPI::Input& in);
 
-  std::string withdraw_cancel();
+  std::string withdraw_cancel(const KAPI::Input& in);
 
 
 
 
 
 
-  
-  
+
+
  protected:
  private:
 };
@@ -118,7 +100,7 @@ class kraken_interface
 /*
 
 ** id="general-usage" General Usage
-- 
+-
 - Public methods can use either GET or POST.
 - Private methods must use POST and be set up as follows:
 - HTTP header:
@@ -135,7 +117,7 @@ otp = two-factor password (if two-factor enabled, otherwise not required)
 numbers less than the previous nonce. A persistent counter or the current time in hundredths of a second precision or higher is suggested.
 Too many requests with nonces below the last valid nonce (EAPI:Invalid nonce) can result in temporary bans.
 - Note: Sometimes requests can arrive out of order or NTP can cause your clock to rewind, resulting in nonce issues. If you encounter this issue, you can change the nonce window in your account API settings page. The amount to set it to depends upon how you increment the nonce. Depending on your connectivity, a setting that would accomodate 3-15 seconds of network issues is suggested.
-- API calls that require currency assets can be referenced using their ISO4217-A3 names in the case of ISO registered names, their 3 letter commonly used names in the case of unregistered names, or their X-ISO4217-A3 code (see 
+- API calls that require currency assets can be referenced using their ISO4217-A3 names in the case of ISO registered names, their 3 letter commonly used names in the case of unregistered names, or their X-ISO4217-A3 code (see
 - Responses are JSON encoded in the form of:
 **** pre
 error = array of error messages in the format of:
@@ -254,7 +236,7 @@ publicmethod("OHLC");
 **** pre
 pair = asset pair to get OHLC data for
 interval = time frame interval in minutes (optional):
-	1 (default), 5, 15, 30, 60, 240, 1440, 10080, 21600
+        1 (default), 5, 15, 30, 60, 240, 1440, 10080, 21600
 since = return committed OHLC data since given id (optional.  exclusive)
 
 - Result: array of pair name and OHLC data
@@ -418,7 +400,7 @@ txid = comma delimited list of transaction ids to query info about (20 maximum)
 
 - Result: associative array of orders info
 **** pre
-&lt;order_txid&gt; = order info.  See 
+&lt;order_txid&gt; = order info.  See
 
 *** //! Get trades history
 void get-trades-history() {
@@ -479,7 +461,7 @@ trades = whether or not to include trades related to position in output (optiona
 
 - Result: associative array of trades info
 **** pre
-&lt;trade_txid&gt; = trade info.  See 
+&lt;trade_txid&gt; = trade info.  See
 
 *** //! Get open positions
 void get-open-positions() {
@@ -549,7 +531,7 @@ id = comma delimited list of ledger ids to query info about (20 maximum)
 
 - Result: associative array of ledgers info
 **** pre
-&lt;ledger_id&gt; = ledger info.  See 
+&lt;ledger_id&gt; = ledger info.  See
 
 *** //! Get trade volume
 void get-trade-volume() {
@@ -675,7 +657,7 @@ pending = if set, order(s) is/are pending cancellation
 - Note: txid may be a user reference id.
 ** id="private-user-funding" Private user funding
 - This is a tentative funding API and may be updated
-in the future. Please refer to the main 
+in the future. Please refer to the main
 *** //! Get deposit methods
 void deposit-methods() {
 publicmethod("DepositMethods");
