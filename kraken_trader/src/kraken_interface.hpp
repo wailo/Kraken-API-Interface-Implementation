@@ -80,13 +80,6 @@ class kraken_interface
 
   std::string withdraw_cancel(const KAPI::Input& in);
 
-
-
-
-
-
-
-
  protected:
  private:
 };
