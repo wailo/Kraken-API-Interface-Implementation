@@ -9,7 +9,7 @@
 //! 
 //! - Note: This is to aid in approximating the skew time between the server and client.
 //! 
-void get_server_time() {
+std::string get_server_time() {
   kapi.public_method("Time");
 }
 
@@ -30,7 +30,7 @@ void get_server_time() {
 //!     display_decimals = scaling decimal places for output display
 //! 
 //! 
-void get_asset_info() {
+std::string get_asset_info() {
   kapi.public_method("Assets");
 }
 
@@ -67,7 +67,7 @@ void get_asset_info() {
 //! is given in "fees" and maker side in "fees_maker". For pairs not on
 //! maker/taker, they will only be given in "fees".
 //! 
-void get_tradable_pairs() {
+std::string get_tradable_pairs() {
   kapi.public_method("AssetPairs");
 }
 
@@ -90,7 +90,7 @@ void get_tradable_pairs() {
 //! 
 //! - Note: Today's prices start at 00:00:00 UTC
 //! 
-void get_ticker_info(const std::string& pair) {
+std::string get_ticker_info(const std::string& pair) {
   KAPI::Input in;
   in.insert(make_pair("pair", pair));
   kapi.public_method("Ticker", in);
@@ -111,7 +111,7 @@ void get_ticker_info(const std::string& pair) {
 //! 
 //! - Note: the last entry in the OHLC array is for the current, not-yet-committed frame and will always be present, regardless of the value of &quot;since&quot;.
 //! 
-void get_ohlc_data() {
+std::string get_ohlc_data() {
   kapi.public_method("OHLC");
 }
 
@@ -126,7 +126,7 @@ void get_ohlc_data() {
 //!     asks = ask side array of array entries(price, volume, timestamp)
 //!     bids = bid side array of array entries(price, volume, timestamp)
 //! 
-void get_order_book(const std::string& pair, const boost::optioanl<int>& count) {
+std::string get_order_book(const std::string& pair, const boost::optioanl<int>& count) {
   KAPI::Input in;
   in.insert(make_pair("pair", pair));
   in.insert(make_pair("count", count));
@@ -144,7 +144,7 @@ void get_order_book(const std::string& pair, const boost::optioanl<int>& count) 
 //!     array of array entries(price, volume, time, buy/sell, market/limit, miscellaneous)
 //! last = id to be used as since when polling for new trade data
 //! 
-void get_recent_trades(const std::string& pair, const boost::optioanl<boost::datetime>& since)  {
+std::string get_recent_trades(const std::string& pair, const boost::optioanl<boost::datetime>& since)  {
   KAPI::Input in;
   in.insert(make_pair("pair", pair));
   in.insert(make_pair("since", since));
@@ -164,7 +164,7 @@ void get_recent_trades(const std::string& pair, const boost::optioanl<boost::dat
 //! 
 //! - Note: &quot;since&quot; is inclusive so any returned data with the same time as the previous set should overwrite all of the previous set's entries at that time
 //! 
-void get_recent_spread_data(const std::string& pair, const boost::optioanl<boost::datetime>& since) {
+std::string get_recent_spread_data(const std::string& pair, const boost::optioanl<boost::datetime>& since) {
   KAPI::Input in;
   in.insert(make_pair("pair", pair));
   kapi.public_method("Spread", in);
@@ -175,7 +175,7 @@ void get_recent_spread_data(const std::string& pair, const boost::optioanl<boost
 //! //! 
 //! - Result: array of asset names and balance amount
 //! 
-void get_account_balance() {
+std::string get_account_balance() {
   kapi.private_method("Balance", in);
 }
 
@@ -199,7 +199,7 @@ void get_account_balance() {
 //! 
 //! - Note: Rates used for the floating valuation is the midpoint of the best bid and ask prices
 //! 
-void get_trade_balance(const boost::optoinal<std::string>& aclass, const std::string& asset) {
+std::string get_trade_balance(const boost::optoinal<std::string>& aclass, const std::string& asset) {
   KAPI::Input in;
   in.insert(make_pair("aclass", aclass));
   in.insert(make_pair("asset", asset));
@@ -254,7 +254,7 @@ void get_trade_balance(const boost::optoinal<std::string>& aclass, const std::st
 //! 
 //! - Note: Unless otherwise stated, costs, fees, prices, and volumes are in the asset pair's scale, not the currency's scale. For example, if the asset pair uses a lot size that has a scale of 8, the volume will use a scale of 8, even if the currency it represents only has a scale of 2. Similarly, if the asset pair's pricing scale is 5, the scale will remain as 5, even if the underlying currency has a scale of 8.
 //! 
-void get_open_orders(const boost::optoinal<bool> trades, const std::string& userref) {
+std::string get_open_orders(const boost::optoinal<bool> trades, const std::string& userref) {
   KAPI::Input in;
   in.insert(make_pair("trades", trades));
   in.insert(make_pair("userref", userref));
@@ -282,7 +282,7 @@ void get_open_orders(const boost::optoinal<bool> trades, const std::string& user
 //! 
 //! - Note: Times given by order tx ids are more accurate than unix timestamps. If an order tx id is given for the time, the order's open time is used
 //! 
-void get_closed_orders( const boost::optiona<bool> trades,
+std::string get_closed_orders( const boost::optiona<bool> trades,
                         const boost::optional<std::string> userref,
                         const boost::optional<int> start,
                         const boost::optional<int> end,
@@ -310,7 +310,7 @@ void get_closed_orders( const boost::optiona<bool> trades,
 //! order_txid = order info.  See 
 //! 
 //! 
-void query_orders_info(const boost::optiona<bool> trades,
+std::string query_orders_info(const boost::optiona<bool> trades,
                        const boost::optional<std::string> userref,
                        const std::string& txid) {
   KAPI::Input in;
@@ -365,7 +365,7 @@ void query_orders_info(const boost::optiona<bool> trades,
 //! 
 //! 
 //! 
-void get_trades_history() {
+std::string get_trades_history() {
   kapi.private_method("TradesHistory", in);
 }
 
@@ -379,7 +379,7 @@ void get_trades_history() {
 //! trade_txid = trade info.  See 
 //! 
 //! 
-void query_trades_info() {
+std::string query_trades_info() {
   kapi.private_method("QueryTrades", in);
 }
 
@@ -409,7 +409,7 @@ void query_trades_info() {
 //! 
 //! - Note: Unless otherwise stated, costs, fees, prices, and volumes are in the asset pair's scale, not the currency's scale.
 //! 
-void get_open_positions() {
+std::string get_open_positions() {
   kapi.private_method("OpenPositions", in);
 }
 
@@ -442,7 +442,7 @@ void get_open_positions() {
 //! 
 //! - Note: Times given by ledger ids are more accurate than unix timestamps.
 //! 
-void get_ledgers_info() {
+std::string get_ledgers_info() {
   kapi.private_method("Ledgers", in);
 }
 
@@ -455,7 +455,7 @@ void get_ledgers_info() {
 //! ledger_id = ledger info.  See 
 //! 
 //! 
-void query_ledgers() {
+std::string query_ledgers() {
   kapi.private_method("QueryLedgers", in);
 }
 
@@ -487,7 +487,7 @@ void query_ledgers() {
 //! is given in "fees" and maker side in "fees_maker". For pairs not on
 //! maker/taker, they will only be given in "fees".
 //! 
-void get_trade_volume() {
+std::string get_trade_volume() {
   kapi.private_method("TradeVolume", in);
 }
 
@@ -561,7 +561,7 @@ void get_trade_volume() {
 //! 
 //! - Note:
 //! 
-void add_standard_order( const std::string& pair,
+std::string add_standard_order( const std::string& pair,
                          const std::string& type,
                          const std::string& ordertype,
                          const boost::optional<double>& price,
@@ -601,7 +601,7 @@ void add_standard_order( const std::string& pair,
 //! 
 //! - Note: txid may be a user reference id.
 //! 
-void cancel_open_order( const std::string& txid ) {
+std::string cancel_open_order( const std::string& txid ) {
   KAPI::Input in;
   in.insert(make_pair("txid", txid));
   kapi.private_method("CancelOrder", in);
@@ -624,7 +624,7 @@ void cancel_open_order( const std::string& txid ) {
 //! address-setup-fee = whether or not method has an address setup fee (optional)
 //! 
 //! 
-void deposit_methods() {
+std::string deposit_methods() {
   kapi.private_method("DepositMethods", in);
 }
 
@@ -643,7 +643,7 @@ void deposit_methods() {
 //! new = whether or not address has ever been used
 //! 
 //! 
-void deposit_addresses() {
+std::string deposit_addresses() {
   kapi.private_method("DepositAddresses", in);
 }
 
@@ -672,7 +672,7 @@ void deposit_addresses() {
 //! 
 //! For information about the status, please refer to the .
 //! 
-void deposit_status() {
+std::string deposit_status() {
   kapi.private_method("DepositStatus", in);
 }
 
@@ -691,7 +691,7 @@ void deposit_status() {
 //! fee = amount of fees that will be paid
 //! 
 //! 
-void get_withdrawal_info() {
+std::string get_withdrawal_info() {
   kapi.private_method("WithdrawInfo", in);
 }
 
@@ -708,7 +708,7 @@ void get_withdrawal_info() {
 //! refid = reference id
 //! 
 //! 
-void withdraw_funds() {
+std::string withdraw_funds() {
   kapi.private_method("Withdraw", in);
 }
 
@@ -740,7 +740,7 @@ void withdraw_funds() {
 //! 
 //! For information about the status, please refer to the .
 //! 
-void withdraw_status() {
+std::string withdraw_status() {
   kapi.private_method("WithdrawStatus", in);
 }
 
@@ -758,7 +758,7 @@ void withdraw_status() {
 //! process is, it may not be possible to cancel the withdrawal.
 //! 
 //! 
-void withdraw_cancel() {
+std::string withdraw_cancel() {
   kapi.private_method("WithdrawCancel", in);
 }
 

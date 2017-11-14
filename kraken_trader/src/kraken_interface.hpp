@@ -24,6 +24,86 @@ class kraken_interface
   //! Move assignment operator
   kraken_interface& operator=(kraken_interface &&other) noexcept;
 
+  std::string get_server_time();
+
+  std::string get_asset_info();
+
+  std::string get_tradable_pairs();
+
+  std::string get_ticker_info(const std::string& pair);
+
+  std::string get_ohlc_data();
+
+  std::string get_order_book(const std::string& pair, const boost::optioanl<int>& count);
+
+  std::string get_recent_trades(const std::string& pair, const boost::optioanl<boost::datetime>& since) ;
+
+  std::string get_recent_spread_data(const std::string& pair, const boost::optioanl<boost::datetime>& since);
+
+  std::string get_account_balance();
+
+  std::string get_trade_balance(const boost::optoinal<std::string>& aclass, const std::string& asset);
+
+  std::string get_open_orders(const boost::optoinal<bool> trades, const std::string& userref);
+
+  std::string get_closed_orders(const boost::optiona<bool> trades,
+                                const boost::optional<std::string> userref,
+                                const boost::optional<int> start,
+                                const boost::optional<int> end,
+                                const std::string& ofs,
+                                const boost::optional<string> closetime); 
+
+  std::string query_orders_info(const boost::optiona<bool> trades,
+                                const boost::optional<std::string> userref,
+                                const std::string& txid);
+
+  std::string get_trades_history();
+
+  std::string query_trades_info();
+
+  std::string get_open_positions();
+
+  std::string get_ledgers_info();
+
+  std::string query_ledgers();
+
+  std::string get_trade_volume();
+
+  std::string add_standard_order(const std::string& pair,
+                                 const std::string& type,
+                                 const std::string& ordertype,
+                                 const boost::optional<double>& price,
+                                 const boost::optional<double>& price2,
+                                 const double volume,
+                                 const boost::optional<std::string> leverage,
+                                 const boost::optional<std::string> oflags,
+                                 const boost::optional<int> starttm,
+                                 const boost::optional<int> expiretm,
+                                 const boost::optional<std::string>  userref,
+                                 const boost::optional<bool> validate = true);
+
+  std::string cancel_open_order(const std::string& txid);
+
+  std::string deposit_methods();
+
+  std::string deposit_addresses();
+
+  std::string deposit_status();
+
+  std::string get_withdrawal_info();
+
+  std::string withdraw_funds();
+
+  std::string withdraw_status();
+
+  std::string withdraw_cancel();
+
+
+
+
+
+
+  
   
  protected:
  private:

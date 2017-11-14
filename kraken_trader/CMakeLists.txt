@@ -38,7 +38,8 @@ include_directories (${BOOST_INCLUDE_DIRS} KRAKENAPI)
 #-------------------------------------------------------------------------------
 # Add the executable 'main'
 #-------------------------------------------------------------------------------
-add_executable (${PROJECT_NAME} src/main.cpp src/order.cpp)
+FILE(GLOB SRCFILES src/*.cpp)
+add_executable (${PROJECT_NAME} ${SRCFILES})
 set_target_properties (${PROJECT_NAME} PROPERTIES 
   COMPILE_DEFINITIONS_DEBUG "JSON_DEBUG;JSON_SAFE;JSON_ISO_STRICT")
 target_link_libraries (${PROJECT_NAME} ${LIBS} kapi)

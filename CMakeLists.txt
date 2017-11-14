@@ -22,7 +22,6 @@ endif ()
 #Setup CMake to run tests
 enable_testing()
 
-
 # When done tweaking common stuff, configure the components (subprojects).
 # NOTE: The order matters! The most independent ones should go first.
 add_subdirectory(krakenapi)
