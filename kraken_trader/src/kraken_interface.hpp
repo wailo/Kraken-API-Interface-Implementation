@@ -1,87 +1,131 @@
 #ifndef KRAKEN_INTERFACE_H
 #define KRAKEN_INTERFACE_H
 
+#include "order.hpp"
+#include "../../krakenapi/kraken/kclient.hpp"
+
+#include <unordered_map>
 #include <boost/optional.hpp>
 
 class kraken_interface
 {
  public:
+
+  using Input = Kraken::KInput;
+  
   //! Default constructor
   kraken_interface();
 
   //! Copy constructor
-  kraken_interface(const kraken_interface &other);
+  kraken_interface(const kraken_interface &other) = delete;
 
   //! Move constructor
-  kraken_interface(kraken_interface &&other) noexcept;
+  kraken_interface(kraken_interface &&other) = delete;
 
   //! Destructor
-  virtual ~kraken_interface() noexcept;
+  ~kraken_interface() = default;
 
   //! Copy assignment operator
-  kraken_interface& operator=(const kraken_interface &other);
+  kraken_interface& operator=(const kraken_interface &other) = default;
 
   //! Move assignment operator
-  kraken_interface& operator=(kraken_interface &&other) noexcept;
+  kraken_interface& operator=(kraken_interface &&other) = default;
+
+    // convert to kraken map
+  static Input order_to_kraken_order(const order& order_);
+
+  // from kraken map
+  static order from_kraken_order(Input &data);
+
+  
+  static const std::unordered_map<order::order_type, const std::string > order_types_to_string;
+  static const std::unordered_map< std::string, const order::order_type> order_types_to_enum;
+
+  static const order create_limit_order(const std::string& pair,
+                                        order::side_t buy_sell,
+                                        double volume,
+                                        double limit_price,
+                                        bool validate = true);
+                                        
+  static std::string order_side_to_string(order::side_t side);
+  
+  static order::side_t order_side_from_string(const std::string& side);
+
+
+
+  // Kraken API Calls
 
   std::string get_server_time();
 
-  std::string get_asset_info(const KAPI::Input& in);
+  std::string get_asset_info(const Input& in);
 
-  std::string get_tradable_pairs(const KAPI::Input& in);
+  std::string get_tradable_pairs(const Input& in);
 
   std::string get_ticker_info(const std::string& pair);
 
-  std::string get_ohlc_data(const KAPI::Input& in);
+  std::string get_ohlc_data(const Input& in);
 
-  std::string get_order_book(const KAPI::Input& in);
+  std::string get_order_book(const std::string& pair,
+                             const std::string& count);
 
-  std::string get_recent_trades(const KAPI::Input& in) ;
+  std::string get_recent_trades(const std::string& pair,
+                                const std::string& since);
 
-  std::string get_recent_spread_data(const KAPI::Input& in);
+  std::string get_recent_spread_data(const std::string& pair);
 
-  std::string get_account_balance(const KAPI::Input& in);
+  std::string get_account_balance(const Input& in);
 
-  std::string get_trade_balance(const KAPI::Input& in);
+  std::string get_trade_balance(const std::string& aclass,
+                                const std::string& asset);
 
-  std::string get_open_orders(const KAPI::Input& in);
+  std::string get_open_orders(const std::string& trades,
+                              const std::string& userref);  
 
-  std::string get_closed_orders(const KAPI::Input in);
+  std::string get_closed_orders(const std::string& trades,
+                                const std::string& userref,
+                                const std::string& start,
+                                const std::string& end,
+                                const std::string& ofs,
+                                const std::string& closetime);
 
-  std::string query_orders_info(const KAPI::Input in);
+  std::string query_orders_info(const std::string& trades,
+                                const std::string& userref,
+                                const std::string& txid);
 
-  std::string get_trades_history(const KAPI::Input& in);
+  std::string get_trades_history(const Input& in);
 
-  std::string query_trades_info(const KAPI::Input& in);
+  std::string query_trades_info(const Input& in);
 
-  std::string get_open_positions(const KAPI::Input& in);
+  std::string get_open_positions(const Input& in);
 
-  std::string get_ledgers_info(const KAPI::Input& in);
+  std::string get_ledgers_info(const Input& in);
 
-  std::string query_ledgers(const KAPI::Input& in);
+  std::string query_ledgers(const Input& in);
 
-  std::string get_trade_volume(const KAPI::Input& in);
+  std::string get_trade_volume(const Input& in);
 
-  std::string add_standard_order(const KAPI::Input& in);
+  std::string add_standard_order(const Input in);
 
-  std::string cancel_open_order(const KAPI::Input& in);
+  std::string cancel_open_order(const std::string& txid);
 
-  std::string deposit_methods(const KAPI::Input& in);
+  std::string deposit_methods(const Input& in);
 
-  std::string deposit_addresses(const KAPI::Input& in);
+  std::string deposit_addresses(const Input& in);
 
-  std::string deposit_status(const KAPI::Input& in);
+  std::string deposit_status(const Input& in);
 
-  std::string get_withdrawal_info(const KAPI::Input& in);
+  std::string get_withdrawal_info(const Input& in);
 
-  std::string withdraw_funds(const KAPI::Input& in);
+  std::string withdraw_funds(const Input& in);
 
-  std::string withdraw_status(const KAPI::Input& in);
+  std::string withdraw_status(const Input& in);
 
-  std::string withdraw_cancel(const KAPI::Input& in);
-
+  std::string withdraw_cancel(const Input& in);
+  
  protected:
  private:
+
+  Kraken::KClient m_kapi;
 };
 
 

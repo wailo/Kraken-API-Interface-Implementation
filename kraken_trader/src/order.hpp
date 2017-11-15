@@ -1,22 +1,15 @@
 #ifndef ORDER_H
 #define ORDER_H
 
-#include "../../krakenapi/kraken/kclient.hpp"
-
+#include <string>
 #include <ctime>
-#include <unordered_map>
 
 class order {
 public:
-  using Input = Kraken::KInput;
+
   //! Default constructor
   order();
 
-  // convert to kraken map
-  Input to_kraken_order() const;
-
-  // from kraken map
-  static order from_kraken_order(Input &data);
 
   //! Copy constructor
   // order(const order &other);
@@ -51,36 +44,7 @@ public:
 
   enum class side_t { buy, sell };
   
-  static const std::unordered_map<order_type, const std::string > order_types_to_string;
-  static const std::unordered_map< std::string, const order_type> order_types_to_enum;
-  static const order create_limit_order(const std::string& pair,
-                                        side_t buy_sell,
-                                        double volume,
-                                        double limit_price,
-                                        bool validate = true);
-                                        
-  static std::string side_to_string(side_t side) {
-    if ( side == side_t::buy ) {
-      return "buy";
-    }
-    else if ( side == side_t::sell ) {
-      return "sell";
-    }
-    
-    throw std::logic_error("Unknown side_t side");
-  }
 
-
-  static side_t side_from_string(const std::string& side) {
-    if ( side == "buy" ) {
-      return side_t::buy;
-    }
-    else if ( side == "sell" ) {
-      return side_t::sell;
-    }
-    
-    throw std::logic_error("Unknown side name");
-  }
   
   // asset pair
   std::string pair;

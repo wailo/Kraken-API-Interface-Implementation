@@ -2,7 +2,7 @@
 #include <stdexcept>
 
 #include "../../krakenapi/kraken/kclient.hpp"
-#include "order.hpp"
+#include "kraken_interface.hpp"
 
 using namespace std;
 using namespace Kraken;
@@ -32,13 +32,13 @@ int main()
 
     // std::cout << "------------ end of data -----------" << std::endl;
      order dummy_order;
-    auto dummy_order_data = dummy_order.to_kraken_order();
+     auto dummy_order_data = kraken_interface::order_to_kraken_order(dummy_order);
 
     for ( auto item : dummy_order_data ) { 
       std::cout << item.first << " -- " << item.second << std::endl;
     }
 
-    cout << kapi.private_method("AddOrder", dummy_order_data) << endl;
+    // cout << kapi.private_method("AddOrder", dummy_order_data) << endl;
   }
   catch(exception& e) {
     cerr << "Error: " << e.what() << endl;

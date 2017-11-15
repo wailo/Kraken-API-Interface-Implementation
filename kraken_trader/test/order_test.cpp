@@ -8,7 +8,7 @@
 
 #include <boost/test/unit_test.hpp>
 
-#include "../src/order.hpp"
+#include "../src/kraken_interface.hpp"
 
 BOOST_AUTO_TEST_CASE(native_order_to_kraken) {
 
@@ -26,7 +26,7 @@ BOOST_AUTO_TEST_CASE(native_order_to_kraken) {
   // order_.userref;
   order_.validate = true;
 
-  auto kraken_order =  order_.to_kraken_order();
+  auto kraken_order =  kraken_interface::order_to_kraken_order(order_);
 
   BOOST_CHECK_EQUAL(kraken_order["pair"], "XXBTZEUR");
   BOOST_CHECK_EQUAL(kraken_order["type"], "sell");
@@ -45,7 +45,7 @@ BOOST_AUTO_TEST_CASE(native_order_to_kraken) {
 
 BOOST_AUTO_TEST_CASE(native_order_from_kraken) {
 
-  order::Input kraken_order;
+  kraken_interface::Input kraken_order;
   kraken_order["pair"] =  "XXBTZEUR";
   kraken_order["type"] =  "sell";
   kraken_order["ordertype"] =  "limit";
@@ -58,7 +58,7 @@ BOOST_AUTO_TEST_CASE(native_order_from_kraken) {
   //kraken_order["userref"]   = userre;
   kraken_order["validate"];
 
-  auto order_ = order::from_kraken_order(kraken_order);
+  auto order_ = kraken_interface::from_kraken_order(kraken_order);
 
   BOOST_CHECK_EQUAL(order_.pair , "XXBTZEUR");
   BOOST_CHECK_EQUAL(unsigned(order_.side) , unsigned(order::side_t::sell));
@@ -77,7 +77,7 @@ BOOST_AUTO_TEST_CASE(native_order_from_kraken) {
 
 BOOST_AUTO_TEST_CASE(create_limit_order) {
 
-  order order_ = order::create_limit_order("XXBTZEUR", order::side_t::sell, 150.0, 05, true);
+  order order_ = kraken_interface::create_limit_order("XXBTZEUR", order::side_t::sell, 150.0, 05, true);
   BOOST_CHECK_EQUAL(order_.pair , "XXBTZEUR");
   BOOST_CHECK_EQUAL(unsigned(order_.side) , unsigned(order::side_t::sell));
   BOOST_CHECK_EQUAL(unsigned(order_.ordertype) , unsigned(order::order_type::limit));
