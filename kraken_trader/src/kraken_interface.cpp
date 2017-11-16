@@ -28,26 +28,7 @@ order::side_t kraken_interface::order_side_from_string(const std::string& side) 
   throw std::logic_error("Unknown side name");
 }
 
-const order kraken_interface::create_limit_order(const std::string& pair,
-                                                 order::side_t buy_sell,
-                                                 double volume,
-                                                 double limit_price,
-                                                 bool validate) {
-  order order_;
-  order_.pair = pair;
-  order_.side = buy_sell;
-  order_.ordertype = order::order_type::limit;
-  order_.price  = limit_price;
-  //order_.price2 = 100000.0;
-  order_.volume = volume;
-  order_.leverage = "none";
-  // order_.oflags;
-  order_.starttm =  0;
-  order_.expiretm = 0;
-  // order_.userref;cpc
-  order_.validate = validate;
-  return order_;
-}
+
 
 const std::unordered_map<order::order_type, const std::string > kraken_interface::order_types_to_string = {
   {order::order_type::market, "market"},
@@ -134,7 +115,7 @@ order kraken_interface::from_kraken_order(kraken_interface::Input& data)
 //!
 std::string kraken_interface::get_server_time() {
   Input in;
-  m_kapi.public_method("Time", in);
+  return m_kapi.public_method("Time", in);
 }
 
 //! *** //! Get asset info
@@ -155,7 +136,7 @@ std::string kraken_interface::get_server_time() {
 //!
 //!
 std::string kraken_interface::get_asset_info(const Input& in) {
-  m_kapi.public_method("Assets", in);
+  return m_kapi.public_method("Assets", in);
 }
 
 //! *** //! Get tradable asset pairs
@@ -192,7 +173,7 @@ std::string kraken_interface::get_asset_info(const Input& in) {
 //! maker/taker, they will only be given in "fees".
 //!
 std::string kraken_interface::get_tradable_pairs(const Input& in) {
-  m_kapi.public_method("AssetPairs", in);
+  return m_kapi.public_method("AssetPairs", in);
 }
 
 //! *** //! Get ticker information
@@ -217,7 +198,7 @@ std::string kraken_interface::get_tradable_pairs(const Input& in) {
 std::string kraken_interface::get_ticker_info(const std::string& pair) {
   Input in;
   in.insert(make_pair("pair", pair));
-  m_kapi.public_method("Ticker", in);
+  return m_kapi.public_method("Ticker", in);
 }
 
 //! *** //! Get OHLC data
@@ -236,7 +217,7 @@ std::string kraken_interface::get_ticker_info(const std::string& pair) {
 //! - Note: the last entry in the OHLC array is for the current, not-yet-committed frame and will always be present, regardless of the value of &quot;since&quot;.
 //!
 std::string kraken_interface::get_ohlc_data(const Input& in) {
-  m_kapi.public_method("OHLC", in);
+  return m_kapi.public_method("OHLC", in);
 }
 
 //! *** //! Get order book
@@ -251,11 +232,15 @@ std::string kraken_interface::get_ohlc_data(const Input& in) {
 //!     bids = bid side array of array entries(price, volume, timestamp)
 //!
 std::string kraken_interface::get_order_book(const std::string& pair,
-                                             const std::string& count) {
+                                             const boost::optional<int>& count) {
   Input in;
   in.insert(make_pair("pair", pair));
-  in.insert(make_pair("count", count));
-  m_kapi.public_method("Depth", in);
+
+  if (count) {
+    in.insert(make_pair("count", std::to_string(count.get())));
+  }
+  
+  return m_kapi.public_method("Depth", in);
 }
 
 //! *** //! Get recent trades
@@ -274,7 +259,7 @@ std::string kraken_interface::get_recent_trades(const std::string& pair,
   Input in;
   in.insert(make_pair("pair", pair));
   in.insert(make_pair("since", since));
-  m_kapi.public_method("Trades", in);
+  return m_kapi.public_method("Trades", in);
 }
 
 //! *** //! Get recent spread data
@@ -293,7 +278,7 @@ std::string kraken_interface::get_recent_trades(const std::string& pair,
 std::string kraken_interface::get_recent_spread_data(const std::string& pair) {
   Input in;
   in.insert(make_pair("pair", pair));
-  m_kapi.public_method("Spread", in);
+  return m_kapi.public_method("Spread", in);
 }
 
 //! //////////////////////////////////////////////////////////////////////////////////////////////////// ** id="private-user-data" Private user data
@@ -302,7 +287,7 @@ std::string kraken_interface::get_recent_spread_data(const std::string& pair) {
 //! - Result: array of asset names and balance amount
 //!
 std::string kraken_interface::get_account_balance(const Input& in) {
-  m_kapi.private_method("Balance", in);
+  return m_kapi.private_method("Balance", in);
 }
 
 //! *** //! Get trade balance
@@ -330,7 +315,7 @@ std::string kraken_interface::get_trade_balance(const std::string& aclass,
   Input in;
   in.insert(make_pair("aclass", aclass));
   in.insert(make_pair("asset", asset));
-  m_kapi.private_method("TradeBalance", in);
+  return m_kapi.private_method("TradeBalance", in);
 }
 
 //! *** //! Get open orders
@@ -386,7 +371,7 @@ std::string kraken_interface::get_open_orders(const std::string& trades,
   Input in;
   in.insert(make_pair("trades", trades));
   in.insert(make_pair("userref", userref));
-  m_kapi.private_method("OpenOrders", in);
+  return m_kapi.private_method("OpenOrders", in);
 }
 
 //! *** //! Get closed orders
@@ -423,7 +408,7 @@ std::string kraken_interface::get_closed_orders(const std::string& trades,
   in.insert(make_pair("end", end));
   in.insert(make_pair("ofs", ofs));
   in.insert(make_pair("closetime", closetime));
-  m_kapi.private_method("ClosedOrders",in);
+  return m_kapi.private_method("ClosedOrders",in);
 }
 
 //! *** //! Query orders info
@@ -444,7 +429,7 @@ std::string kraken_interface::query_orders_info(const std::string& trades,
   in.insert(make_pair("trades", trades));
   in.insert(make_pair("userref", userref));
   in.insert(make_pair("txid", txid));
-  m_kapi.private_method("QueryOrders", in);
+  return m_kapi.private_method("QueryOrders", in);
 }
 
 //! *** //! Get trades history
@@ -493,7 +478,7 @@ std::string kraken_interface::query_orders_info(const std::string& trades,
 //!
 //!
 std::string kraken_interface::get_trades_history(const Input& in) {
-  m_kapi.private_method("TradesHistory", in);
+  return m_kapi.private_method("TradesHistory", in);
 }
 
 //! *** //! Query trades info
@@ -507,7 +492,7 @@ std::string kraken_interface::get_trades_history(const Input& in) {
 //!
 //!
 std::string kraken_interface::query_trades_info(const Input& in) {
-  m_kapi.private_method("QueryTrades", in);
+  return m_kapi.private_method("QueryTrades", in);
 }
 
 //! *** //! Get open positions
@@ -537,7 +522,7 @@ std::string kraken_interface::query_trades_info(const Input& in) {
 //! - Note: Unless otherwise stated, costs, fees, prices, and volumes are in the asset pair's scale, not the currency's scale.
 //!
 std::string kraken_interface::get_open_positions(const Input& in) {
-  m_kapi.private_method("OpenPositions", in);
+  return m_kapi.private_method("OpenPositions", in);
 }
 
 //! *** //! Get ledgers info
@@ -570,7 +555,7 @@ std::string kraken_interface::get_open_positions(const Input& in) {
 //! - Note: Times given by ledger ids are more accurate than unix timestamps.
 //!
 std::string kraken_interface::get_ledgers_info(const Input& in) {
-  m_kapi.private_method("Ledgers", in);
+  return m_kapi.private_method("Ledgers", in);
 }
 
 //! *** //! Query ledgers
@@ -583,7 +568,7 @@ std::string kraken_interface::get_ledgers_info(const Input& in) {
 //!
 //!
 std::string kraken_interface::query_ledgers(const Input& in) {
-  m_kapi.private_method("QueryLedgers", in);
+  return m_kapi.private_method("QueryLedgers", in);
 }
 
 //! *** //! Get trade volume
@@ -615,7 +600,7 @@ std::string kraken_interface::query_ledgers(const Input& in) {
 //! maker/taker, they will only be given in "fees".
 //!
 std::string kraken_interface::get_trade_volume(const Input& in) {
-  m_kapi.private_method("TradeVolume", in);
+  return m_kapi.private_method("TradeVolume", in);
 }
 
 //! //////////////////////////////////////////////////////////////////////////////////////////////////// ** id="private-user-trading" Private user trading
@@ -706,7 +691,7 @@ std::string kraken_interface::add_standard_order(const Input in) {
 std::string kraken_interface::cancel_open_order(const std::string& txid) {
   Input in;
   in.insert(make_pair("txid", txid));
-  m_kapi.private_method("CancelOrder", in);
+  return m_kapi.private_method("CancelOrder", in);
 }
 
 //! //////////////////////////////////////////////////////////////////////////////////////////////////// ** id="private-user-funding" Private user funding
@@ -727,7 +712,7 @@ std::string kraken_interface::cancel_open_order(const std::string& txid) {
 //!
 //!
 std::string kraken_interface::deposit_methods(const Input& in) {
-  m_kapi.private_method("DepositMethods", in);
+  return m_kapi.private_method("DepositMethods", in);
 }
 
 //! *** //! Get deposit addresses
@@ -746,7 +731,7 @@ std::string kraken_interface::deposit_methods(const Input& in) {
 //!
 //!
 std::string kraken_interface::deposit_addresses(const Input& in) {
-  m_kapi.private_method("DepositAddresses", in);
+  return m_kapi.private_method("DepositAddresses", in);
 }
 
 //! *** //! Get status of recent deposits
@@ -775,7 +760,7 @@ std::string kraken_interface::deposit_addresses(const Input& in) {
 //! For information about the status, please refer to the .
 //!
 std::string kraken_interface::deposit_status(const Input& in) {
-  m_kapi.private_method("DepositStatus", in);
+  return m_kapi.private_method("DepositStatus", in);
 }
 
 //! *** //! Get withdrawal information
@@ -794,7 +779,7 @@ std::string kraken_interface::deposit_status(const Input& in) {
 //!
 //!
 std::string kraken_interface::get_withdrawal_info(const Input& in) {
-  m_kapi.private_method("WithdrawInfo", in);
+  return m_kapi.private_method("WithdrawInfo", in);
 }
 
 //! *** //! Withdraw funds
@@ -811,7 +796,7 @@ std::string kraken_interface::get_withdrawal_info(const Input& in) {
 //!
 //!
 std::string kraken_interface::withdraw_funds(const Input& in) {
-  m_kapi.private_method("Withdraw", in);
+  return m_kapi.private_method("Withdraw", in);
 }
 
 //! *** //! Get status of recent withdrawals
@@ -843,7 +828,7 @@ std::string kraken_interface::withdraw_funds(const Input& in) {
 //! For information about the status, please refer to the .
 //!
 std::string kraken_interface::withdraw_status(const Input& in) {
-  m_kapi.private_method("WithdrawStatus", in);
+  return m_kapi.private_method("WithdrawStatus", in);
 }
 
 //! *** //! Request withdrawal cancelation
@@ -861,5 +846,5 @@ std::string kraken_interface::withdraw_status(const Input& in) {
 //!
 //!
 std::string kraken_interface::withdraw_cancel(const Input& in) {
-  m_kapi.private_method("WithdrawCancel", in);
+  return m_kapi.private_method("WithdrawCancel", in);
 }

@@ -7,6 +7,8 @@
 class order {
 public:
 
+  friend class kraken_interface;
+  
   //! Default constructor
   order();
 
@@ -43,8 +45,15 @@ public:
   };
 
   enum class side_t { buy, sell };
-  
 
+  static const order create_limit_order(const std::string& pair,
+                                        order::side_t buy_sell,
+                                        double volume,
+                                        double limit_price,
+                                        bool validate = true);
+
+  
+ private:
   
   // asset pair
   std::string pair;

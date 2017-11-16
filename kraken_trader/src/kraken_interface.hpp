@@ -40,12 +40,6 @@ class kraken_interface
   
   static const std::unordered_map<order::order_type, const std::string > order_types_to_string;
   static const std::unordered_map< std::string, const order::order_type> order_types_to_enum;
-
-  static const order create_limit_order(const std::string& pair,
-                                        order::side_t buy_sell,
-                                        double volume,
-                                        double limit_price,
-                                        bool validate = true);
                                         
   static std::string order_side_to_string(order::side_t side);
   
@@ -66,7 +60,7 @@ class kraken_interface
   std::string get_ohlc_data(const Input& in);
 
   std::string get_order_book(const std::string& pair,
-                             const std::string& count);
+                             const boost::optional<int>& count);
 
   std::string get_recent_trades(const std::string& pair,
                                 const std::string& since);

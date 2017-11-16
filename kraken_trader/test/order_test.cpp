@@ -6,9 +6,14 @@
 //Define our Module name (prints at testing)
 #define BOOST_TEST_MODULE "BaseClassModule"
 
+#define private public
+#define protected public
+
+
 #include <boost/test/unit_test.hpp>
 
 #include "../src/kraken_interface.hpp"
+#include "libjson/libjson.h"
 
 BOOST_AUTO_TEST_CASE(native_order_to_kraken) {
 
@@ -77,7 +82,7 @@ BOOST_AUTO_TEST_CASE(native_order_from_kraken) {
 
 BOOST_AUTO_TEST_CASE(create_limit_order) {
 
-  order order_ = kraken_interface::create_limit_order("XXBTZEUR", order::side_t::sell, 150.0, 05, true);
+  order order_ = order::create_limit_order("XXBTZEUR", order::side_t::sell, 150.0, 05, true);
   BOOST_CHECK_EQUAL(order_.pair , "XXBTZEUR");
   BOOST_CHECK_EQUAL(unsigned(order_.side) , unsigned(order::side_t::sell));
   BOOST_CHECK_EQUAL(unsigned(order_.ordertype) , unsigned(order::order_type::limit));
@@ -90,14 +95,41 @@ BOOST_AUTO_TEST_CASE(create_limit_order) {
 }
 
 
-BOOST_AUTO_TEST_CASE(read_order_book) {
-  BOOST_CHECK_EQUAL(false , true);
+BOOST_AUTO_TEST_CASE(get_order_book) {
+
+  kraken_interface api_intfc;
+  const auto json_data = api_intfc.get_order_book("XXBTZEUR", 5);
+
+  JSONNode root = libjson::parse(json_data);
+
+  // Check for errors.
+  BOOST_CHECK_EQUAL(root.at("error").empty(), true);
+  
+  // // append errors to output string stream
+  // for (auto it = root["error"].begin(); it != root["error"].end(); ++it) 
+  //    oss << endl << " * " << libjson::to_std_string(it->as_string());
+
+  // Check if there are data
+  BOOST_CHECK_EQUAL(!root.at("result").empty(), true);
+
+  // const string& pair = i.at("pair");
+  // JSONNode& result = root["result"];
+  // JSONNode& result_pair = result.at(pair);
+  
+  // vector<Trade> output;
+  // for (JSONNode::iterator it = result_pair.begin(); 
+  //      it != result_pair.end(); ++it)
+  //   output.push_back(Trade(*it));
+  
+  // output.swap(v);
+  // return libjson::to_std_string( result.at("last").as_string() );
+  
 }
 
-BOOST_AUTO_TEST_CASE(get_current_balance) {
-  BOOST_CHECK_EQUAL(false , true);
-}
+// BOOST_AUTO_TEST_CASE(get_current_balance) {
+//   BOOST_CHECK_EQUAL(false , true);
+// }
 
-BOOST_AUTO_TEST_CASE(send_order_to_the_market) {
-  BOOST_CHECK_EQUAL(false , true);
-}
+// BOOST_AUTO_TEST_CASE(send_order_to_the_market) {
+//   BOOST_CHECK_EQUAL(false , true);
+// }
