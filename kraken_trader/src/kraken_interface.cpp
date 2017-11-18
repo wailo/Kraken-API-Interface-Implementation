@@ -135,7 +135,22 @@ std::string kraken_interface::get_server_time() {
 //!     display_decimals = scaling decimal places for output display
 //!
 //!
-std::string kraken_interface::get_asset_info(const Input& in) {
+std::string kraken_interface::get_asset_info(const boost::optional<std::string>& info,
+                                             const boost::optional<std::string>& aclass,
+                                             const boost::optional<std::string>& asset) {
+  Input in;
+  if (info) {
+    in["info"] = info.get();
+  }
+
+  if (aclass) {
+    in["alcass"] = aclass.get();
+  }
+
+  if (asset) {
+    in["asset"] = asset.get();
+  }
+
   return m_kapi.public_method("Assets", in);
 }
 
@@ -239,7 +254,7 @@ std::string kraken_interface::get_order_book(const std::string& pair,
   if (count) {
     in.insert(make_pair("count", std::to_string(count.get())));
   }
-  
+
   return m_kapi.public_method("Depth", in);
 }
 

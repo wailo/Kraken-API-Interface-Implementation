@@ -1,6 +1,6 @@
 #define BOOST_TEST_MAIN
 #if !defined( WIN32 )
-    #define BOOST_TEST_DYN_LINK
+#define BOOST_TEST_DYN_LINK
 #endif
 
 //Define our Module name (prints at testing)
@@ -104,9 +104,9 @@ BOOST_AUTO_TEST_CASE(get_order_book) {
 
   // Check for errors.
   BOOST_CHECK_EQUAL(root.at("error").empty(), true);
-  
+
   // // append errors to output string stream
-  // for (auto it = root["error"].begin(); it != root["error"].end(); ++it) 
+  // for (auto it = root["error"].begin(); it != root["error"].end(); ++it)
   //    oss << endl << " * " << libjson::to_std_string(it->as_string());
 
   // Check if there are data
@@ -115,15 +115,53 @@ BOOST_AUTO_TEST_CASE(get_order_book) {
   // const string& pair = i.at("pair");
   // JSONNode& result = root["result"];
   // JSONNode& result_pair = result.at(pair);
-  
+
   // vector<Trade> output;
-  // for (JSONNode::iterator it = result_pair.begin(); 
+  // for (JSONNode::iterator it = result_pair.begin();
   //      it != result_pair.end(); ++it)
   //   output.push_back(Trade(*it));
-  
+
   // output.swap(v);
   // return libjson::to_std_string( result.at("last").as_string() );
-  
+
+}
+
+
+
+BOOST_AUTO_TEST_CASE(get_asset_info) {
+
+  kraken_interface api_intfc;
+  const auto json_data = api_intfc.get_asset_info(boost::optional<std::string>(),
+                                                  boost::optional<std::string>(),
+                                                  boost::optional<std::string>());
+  JSONNode root = libjson::parse(json_data);
+  auto results = root.at("result");
+  for ( auto node = results.begin(); node != results.end(); ++node) {
+      std::cout << node->as_string() << std::endl;
+    }
+
+  // Check for errors.
+  BOOST_CHECK_EQUAL(root.at("error").empty(), true);
+
+  // // append errors to output string stream
+  // for (auto it = root["error"].begin(); it != root["error"].end(); ++it)
+  //    oss << endl << " * " << libjson::to_std_string(it->as_string());
+
+  // Check if there are data
+  BOOST_CHECK_EQUAL(!root.at("result").empty(), true);
+
+  // const string& pair = i.at("pair");
+  // JSONNode& result = root["result"];
+  // JSONNode& result_pair = result.at(pair);
+
+  // vector<Trade> output;
+  // for (JSONNode::iterator it = result_pair.begin();
+  //      it != result_pair.end(); ++it)
+  //   output.push_back(Trade(*it));
+
+  // output.swap(v);
+  // return libjson::to_std_string( result.at("last").as_string() );
+
 }
 
 // BOOST_AUTO_TEST_CASE(get_current_balance) {

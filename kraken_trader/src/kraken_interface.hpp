@@ -12,7 +12,7 @@ class kraken_interface
  public:
 
   using Input = Kraken::KInput;
-  
+
   //! Default constructor
   kraken_interface();
 
@@ -37,12 +37,12 @@ class kraken_interface
   // from kraken map
   static order from_kraken_order(Input &data);
 
-  
+
   static const std::unordered_map<order::order_type, const std::string > order_types_to_string;
   static const std::unordered_map< std::string, const order::order_type> order_types_to_enum;
-                                        
+
   static std::string order_side_to_string(order::side_t side);
-  
+
   static order::side_t order_side_from_string(const std::string& side);
 
 
@@ -51,7 +51,9 @@ class kraken_interface
 
   std::string get_server_time();
 
-  std::string get_asset_info(const Input& in);
+  std::string get_asset_info(const boost::optional<std::string>& info,
+                             const boost::optional<std::string>& aclass,
+                             const boost::optional<std::string>& asset);
 
   std::string get_tradable_pairs(const Input& in);
 
@@ -73,7 +75,7 @@ class kraken_interface
                                 const std::string& asset);
 
   std::string get_open_orders(const std::string& trades,
-                              const std::string& userref);  
+                              const std::string& userref);
 
   std::string get_closed_orders(const std::string& trades,
                                 const std::string& userref,
@@ -115,7 +117,7 @@ class kraken_interface
   std::string withdraw_status(const Input& in);
 
   std::string withdraw_cancel(const Input& in);
-  
+
  protected:
  private:
 
