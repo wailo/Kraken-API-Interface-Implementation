@@ -31,33 +31,33 @@ order::side_t kraken_interface::order_side_from_string(const std::string& side) 
 
 
 const std::unordered_map<order::order_type, const std::string > kraken_interface::order_types_to_string = {
-  {order::order_type::market, "market"},
-  {order::order_type::limit, "limit"},
-  {order::order_type::stop_loss, "stop_loss"},
-  {order::order_type::take_profit, "take_profit"},
-  {order::order_type::stop_loss_profit, "stop_loss_profit"},
-  {order::order_type::stop_loss_profit_limit, "stop_loss_profit_limit"},
-  {order::order_type::stop_loss_limit, "stop_loss_limit"},
-  {order::order_type::take_profit_limit, "take_profit_limit"},
-  {order::order_type::trailing_stop, "trailing_stop"},
-  {order::order_type::trailing_stop_limit, "trailing_stop_limit"},
-  {order::order_type::stop_loss_and_limit, "stop_loss_and_limit"},
-  {order::order_type::settle_position, "settle_position"}
+  {order::order_type::market                 , "market"},
+  {order::order_type::limit                  , "limit"},
+  {order::order_type::stop_loss              , "stop_loss"},
+  {order::order_type::take_profit            , "take_profit"},
+  {order::order_type::stop_loss_profit       , "stop_loss_profit"},
+  {order::order_type::stop_loss_profit_limit , "stop_loss_profit_limit"},
+  {order::order_type::stop_loss_limit        , "stop_loss_limit"},
+  {order::order_type::take_profit_limit      , "take_profit_limit"},
+  {order::order_type::trailing_stop          , "trailing_stop"},
+  {order::order_type::trailing_stop_limit    , "trailing_stop_limit"},
+  {order::order_type::stop_loss_and_limit    , "stop_loss_and_limit"},
+  {order::order_type::settle_position        , "settle_position"}
 };
 
 const std::unordered_map< std::string, const order::order_type> kraken_interface::order_types_to_enum = {
-  {"market", order::order_type::market},
-  {"limit", order::order_type::limit},
-  {"stop_loss", order::order_type::stop_loss},
-  {"take_profit", order::order_type::take_profit},
-  {"stop_loss_profit", order::order_type::stop_loss_profit},
-  {"stop_loss_profit_limit", order::order_type::stop_loss_profit_limit},
-  {"stop_loss_limit", order::order_type::stop_loss_limit},
-  {"take_profit_limit", order::order_type::take_profit_limit},
-  {"trailing_stop", order::order_type::trailing_stop},
-  {"trailing_stop_limit", order::order_type::trailing_stop_limit},
-  {"stop_loss_and_limit", order::order_type::stop_loss_and_limit},
-  {"settle_position", order::order_type::settle_position}
+  {"market"                 , order::order_type::market},
+  {"limit"                  , order::order_type::limit},
+  {"stop_loss"              , order::order_type::stop_loss},
+  {"take_profit"            , order::order_type::take_profit},
+  {"stop_loss_profit"       , order::order_type::stop_loss_profit},
+  {"stop_loss_profit_limit" , order::order_type::stop_loss_profit_limit},
+  {"stop_loss_limit"        , order::order_type::stop_loss_limit},
+  {"take_profit_limit"      , order::order_type::take_profit_limit},
+  {"trailing_stop"          , order::order_type::trailing_stop},
+  {"trailing_stop_limit"    , order::order_type::trailing_stop_limit},
+  {"stop_loss_and_limit"    , order::order_type::stop_loss_and_limit},
+  {"settle_position"        , order::order_type::settle_position}
 };
 
 kraken_interface::Input kraken_interface::order_to_kraken_order(const order& order_)
@@ -66,19 +66,21 @@ kraken_interface::Input kraken_interface::order_to_kraken_order(const order& ord
   data["pair"]      = order_.pair;
   data["type"]      = order_side_to_string(order_.side);
   data["ordertype"] = order_types_to_string.at(order_.ordertype);
-  data["price"]    = std::to_string(order_.price);
+  data["price"]     = std::to_string(order_.price);
   data["price2"]    = std::to_string(order_.price2);
   data["volume"]    = std::to_string(order_.volume);
   data["leverage"]  = order_.leverage;
+
   if (!order_.oflags.empty()) {
     data["oflags"] = order_.oflags;
   }
+
   data["starttm"]   = std::to_string(order_.starttm);
   data["expiretm"]  = std::to_string(order_.expiretm);
   data["userref"]   = order_.userref;
 
   if (order_.validate) {
-    data["validate"];
+    data["validate"] = "true";
   }
 
   return data;
@@ -187,7 +189,17 @@ std::string kraken_interface::get_asset_info(const boost::optional<std::string>&
 //! is given in "fees" and maker side in "fees_maker". For pairs not on
 //! maker/taker, they will only be given in "fees".
 //!
-std::string kraken_interface::get_tradable_pairs(const Input& in) {
+std::string kraken_interface::get_tradable_pairs(const boost::optional<std::string>& info,
+                                                 const boost::optional<std::string>& pair) {
+  Input in;
+  if (info) {
+    in["info"] = info.get();
+  }
+
+  if (pair) {
+    in["pair"] = pair.get();
+  }
+
   return m_kapi.public_method("AssetPairs", in);
 }
 
@@ -381,11 +393,17 @@ std::string kraken_interface::get_trade_balance(const std::string& aclass,
 //!
 //! - Note: Unless otherwise stated, costs, fees, prices, and volumes are in the asset pair's scale, not the currency's scale. For example, if the asset pair uses a lot size that has a scale of 8, the volume will use a scale of 8, even if the currency it represents only has a scale of 2. Similarly, if the asset pair's pricing scale is 5, the scale will remain as 5, even if the underlying currency has a scale of 8.
 //!
-std::string kraken_interface::get_open_orders(const std::string& trades,
-                                              const std::string& userref) {
+std::string kraken_interface::get_open_orders(const boost::optional<std::string>& trades,
+                                              const boost::optional<std::string>& userref) {
   Input in;
-  in.insert(make_pair("trades", trades));
-  in.insert(make_pair("userref", userref));
+  if (trades) {
+    in.insert(make_pair("trades", trades.get()));
+  }
+
+  if (userref) {
+    in.insert(make_pair("userref", userref.get()));
+  }
+
   return m_kapi.private_method("OpenOrders", in);
 }
 
@@ -688,7 +706,8 @@ std::string kraken_interface::get_trade_volume(const Input& in) {
 //!
 //! - Note:
 //!
-std::string kraken_interface::add_standard_order(const Input in) {
+std::string kraken_interface::add_standard_order(const order& order_) {
+  auto const in =  order_to_kraken_order(order_);
   return m_kapi.private_method("AddOrder", in);
 }
 

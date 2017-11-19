@@ -31,10 +31,10 @@ class kraken_interface
   //! Move assignment operator
   kraken_interface& operator=(kraken_interface &&other) = default;
 
-    // convert to kraken map
+  //! Convert to kraken map
   static Input order_to_kraken_order(const order& order_);
 
-  // from kraken map
+  //! From kraken map
   static order from_kraken_order(Input &data);
 
 
@@ -55,7 +55,8 @@ class kraken_interface
                              const boost::optional<std::string>& aclass,
                              const boost::optional<std::string>& asset);
 
-  std::string get_tradable_pairs(const Input& in);
+  std::string get_tradable_pairs(const boost::optional<std::string>& info,
+                                 const boost::optional<std::string>& pair);
 
   std::string get_ticker_info(const std::string& pair);
 
@@ -74,8 +75,8 @@ class kraken_interface
   std::string get_trade_balance(const std::string& aclass,
                                 const std::string& asset);
 
-  std::string get_open_orders(const std::string& trades,
-                              const std::string& userref);
+  std::string get_open_orders(const boost::optional<std::string>& trades,
+                              const boost::optional<std::string>& userref);
 
   std::string get_closed_orders(const std::string& trades,
                                 const std::string& userref,
@@ -100,7 +101,7 @@ class kraken_interface
 
   std::string get_trade_volume(const Input& in);
 
-  std::string add_standard_order(const Input in);
+  std::string add_standard_order(const order& order_);
 
   std::string cancel_open_order(const std::string& txid);
 

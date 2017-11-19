@@ -20,10 +20,10 @@ order::order()
 
 
 const order order::create_limit_order(const std::string& pair,
-                                                 order::side_t buy_sell,
-                                                 double volume,
-                                                 double limit_price,
-                                                 bool validate) {
+                                      order::side_t buy_sell,
+                                      double volume,
+                                      double limit_price,
+                                      bool validate) {
   order order_;
   order_.pair = pair;
   order_.side = buy_sell;

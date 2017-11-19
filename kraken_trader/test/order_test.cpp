@@ -46,8 +46,6 @@ BOOST_AUTO_TEST_CASE(native_order_to_kraken) {
   BOOST_CHECK_EQUAL(kraken_order.find("validate") != kraken_order.end(), true);
 }
 
-
-
 BOOST_AUTO_TEST_CASE(native_order_from_kraken) {
 
   kraken_interface::Input kraken_order;
@@ -79,7 +77,6 @@ BOOST_AUTO_TEST_CASE(native_order_from_kraken) {
   BOOST_CHECK_EQUAL(order_.validate , true);
 }
 
-
 BOOST_AUTO_TEST_CASE(create_limit_order) {
 
   order order_ = order::create_limit_order("XXBTZEUR", order::side_t::sell, 150.0, 05, true);
@@ -93,7 +90,6 @@ BOOST_AUTO_TEST_CASE(create_limit_order) {
   BOOST_CHECK_EQUAL(order_.expiretm , 0);
   BOOST_CHECK_EQUAL(order_.validate , true);
 }
-
 
 BOOST_AUTO_TEST_CASE(get_order_book) {
 
@@ -126,8 +122,6 @@ BOOST_AUTO_TEST_CASE(get_order_book) {
 
 }
 
-
-
 BOOST_AUTO_TEST_CASE(get_asset_info) {
 
   kraken_interface api_intfc;
@@ -136,33 +130,73 @@ BOOST_AUTO_TEST_CASE(get_asset_info) {
                                                   boost::optional<std::string>());
   JSONNode root = libjson::parse(json_data);
   auto results = root.at("result");
-  for ( auto node = results.begin(); node != results.end(); ++node) {
-      std::cout << node->as_string() << std::endl;
-    }
 
   // Check for errors.
   BOOST_CHECK_EQUAL(root.at("error").empty(), true);
 
-  // // append errors to output string stream
-  // for (auto it = root["error"].begin(); it != root["error"].end(); ++it)
-  //    oss << endl << " * " << libjson::to_std_string(it->as_string());
+  // Check if there are data
+  BOOST_CHECK_EQUAL(!root.at("result").empty(), true);
+
+}
+
+BOOST_AUTO_TEST_CASE(get_tradable_pairs) {
+
+  kraken_interface api_intfc;
+  const auto json_data = api_intfc.get_tradable_pairs(boost::optional<std::string>(),
+                                                      boost::optional<std::string>());
+  JSONNode root = libjson::parse(json_data);
+  auto results = root.at("result");
+
+  // Check for errors.
+  BOOST_CHECK_EQUAL(root.at("error").empty(), true);
+
+  // Check if there are data
+  BOOST_CHECK_EQUAL(!root.at("result").empty(), true);
+}
+
+
+BOOST_AUTO_TEST_CASE(get_open_orders) {
+
+  kraken_interface api_intfc;
+  const auto json_data = api_intfc.get_open_orders(boost::optional<std::string>(),
+                                                   boost::optional<std::string>());
+  JSONNode root = libjson::parse(json_data);
+  auto results = root.at("result");
+
+  // Check for errors.
+  BOOST_CHECK_EQUAL(root.at("error").empty(), true);
 
   // Check if there are data
   BOOST_CHECK_EQUAL(!root.at("result").empty(), true);
 
-  // const string& pair = i.at("pair");
-  // JSONNode& result = root["result"];
-  // JSONNode& result_pair = result.at(pair);
-
-  // vector<Trade> output;
-  // for (JSONNode::iterator it = result_pair.begin();
-  //      it != result_pair.end(); ++it)
-  //   output.push_back(Trade(*it));
-
-  // output.swap(v);
-  // return libjson::to_std_string( result.at("last").as_string() );
-
 }
+
+BOOST_AUTO_TEST_CASE(add_standard_order) {
+
+  order order_ = order::create_limit_order("BCHEUR", order::side_t::sell, 14, 1140);
+  kraken_interface api_intfc;
+  int tries = 3;
+  while (tries) {
+  try {
+    const auto json_data = api_intfc.add_standard_order(order_);
+    std::cout << json_data << std::endl;
+    JSONNode root = libjson::parse(json_data);
+
+    // Check if there are data
+    BOOST_CHECK_EQUAL(!root.at("result").empty(), true);
+    
+    std::cout << root.at("error").as_string() << std::endl;
+    std::cout << root.at("result").as_string() << std::endl;
+    break;
+  }
+  catch (...) {
+    --tries;
+  }
+  }
+
+  BOOST_CHECK_EQUAL(tries > 0, true);
+}
+
 
 // BOOST_AUTO_TEST_CASE(get_current_balance) {
 //   BOOST_CHECK_EQUAL(false , true);
