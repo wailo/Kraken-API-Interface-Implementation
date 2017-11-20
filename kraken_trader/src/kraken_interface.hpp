@@ -51,19 +51,19 @@ class kraken_interface
 
   std::string get_server_time();
 
-  std::string get_asset_info(const boost::optional<std::string>& info,
-                             const boost::optional<std::string>& aclass,
-                             const boost::optional<std::string>& asset);
+  JSONNode get_asset_info(const boost::optional<std::string>& info,
+                          const boost::optional<std::string>& aclass,
+                          const boost::optional<std::string>& asset);
 
-  std::string get_tradable_pairs(const boost::optional<std::string>& info,
+  boost::optional<JSONNode> get_tradable_pairs(const boost::optional<std::string>& info,
                                  const boost::optional<std::string>& pair);
 
   std::string get_ticker_info(const std::string& pair);
 
   std::string get_ohlc_data(const Input& in);
 
-  std::string get_order_book(const std::string& pair,
-                             const boost::optional<int>& count);
+  boost::optional<JSONNode> get_order_book(const std::string& pair,
+                          const boost::optional<int>& count);
 
   std::string get_recent_trades(const std::string& pair,
                                 const std::string& since);
@@ -101,7 +101,7 @@ class kraken_interface
 
   std::string get_trade_volume(const Input& in);
 
-  std::string add_standard_order(const order& order_);
+  JSONNode add_standard_order(const order& order_);
 
   std::string cancel_open_order(const std::string& txid);
 
@@ -122,6 +122,19 @@ class kraken_interface
  protected:
  private:
 
+template<class function_type>
+boost::optional<JSONNode> send_api_request(int tries, function_type  fn) {
+  boost::optional<JSONNode> res;
+  while (tries--) {
+    res =  fn();
+    if (res) {
+      break;
+    }
+  }
+ 
+  return res;
+ }
+  
   Kraken::KClient m_kapi;
 };
 
