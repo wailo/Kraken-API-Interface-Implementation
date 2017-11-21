@@ -51,7 +51,7 @@ class kraken_interface
 
   std::string get_server_time();
 
-  JSONNode get_asset_info(const boost::optional<std::string>& info,
+  boost::optional<JSONNode> get_asset_info(const boost::optional<std::string>& info,
                           const boost::optional<std::string>& aclass,
                           const boost::optional<std::string>& asset);
 
@@ -101,8 +101,8 @@ class kraken_interface
 
   std::string get_trade_volume(const Input& in);
 
-  JSONNode add_standard_order(const order& order_);
-
+  boost::optional<JSONNode> add_standard_order(const order& order_);
+  
   std::string cancel_open_order(const std::string& txid);
 
   std::string deposit_methods(const Input& in);
@@ -126,7 +126,7 @@ template<class function_type>
 boost::optional<JSONNode> send_api_request(int tries, function_type  fn) {
   boost::optional<JSONNode> res;
   while (tries--) {
-    res =  fn();
+    res = fn();
     if (res) {
       break;
     }

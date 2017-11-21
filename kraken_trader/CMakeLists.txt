@@ -49,8 +49,11 @@ target_link_libraries (${PROJECT_NAME} ${LIBS} kapi)
 find_package(Boost COMPONENTS unit_test_framework REQUIRED)
 include_directories (${Boost_INCLUDE_DIRS})
 
-#I like to keep test files in a separate source directory called test
-file(GLOB TEST_SRCS RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} test/*.cpp)
+# #I like to keep test files in a separate source directory called test
+# file(GLOB TEST_SRCS RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} test/*.cpp)
+
+SET (TEST_SRCS test/order_test.cpp
+               test/api_test.cpp)
 
 #Run through each source
 foreach(testSrc ${TEST_SRCS})
@@ -73,11 +76,11 @@ foreach(testSrc ${TEST_SRCS})
   add_test(NAME ${testName}
     COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/testBin/${testName} )
 
-   add_custom_command(
-     TARGET ${testName}
-     COMMENT "Run tests"
-     POST_BUILD 
-     #WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/testBin
-     COMMAND ${CMAKE_CTEST_COMMAND}  --output-on-failure
-     )
+   # add_custom_command(
+   #   TARGET ${testName}
+   #   COMMENT "Run tests"
+   #   POST_BUILD 
+   #   #WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/testBin
+   #   COMMAND ${CMAKE_CTEST_COMMAND}  --output-on-failure
+   #   )
 endforeach(testSrc)
