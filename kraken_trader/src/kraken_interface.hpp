@@ -75,8 +75,9 @@ class kraken_interface
   std::string get_trade_balance(const std::string& aclass,
                                 const std::string& asset);
 
-  std::string get_open_orders(const boost::optional<std::string>& trades,
-                              const boost::optional<std::string>& userref);
+  typedef std::vector<std::unordered_map<std::string, std::string>> order_data_t;
+  boost::optional<order_data_t> get_open_orders(const boost::optional<std::string>& trades,
+                                                  const boost::optional<std::string>& userref);
 
   std::string get_closed_orders(const std::string& trades,
                                 const std::string& userref,

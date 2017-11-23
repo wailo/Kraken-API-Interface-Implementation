@@ -156,7 +156,7 @@ boost::optional<JSONNode> kraken_interface::get_asset_info(const boost::optional
 
   auto const json_data = m_kapi.public_method("Assets", in);
   boost::optional<JSONNode> root;
-  
+
   try {
     root = libjson::parse(json_data);
   }
@@ -208,24 +208,24 @@ boost::optional<JSONNode> kraken_interface::get_tradable_pairs(const boost::opti
   if (info) {
     in["info"] = info.get();
   }
-  
+
   if (pair) {
     in["pair"] = pair.get();
   }
 
   std::string json_data = m_kapi.public_method("AssetPairs", in);
   boost::optional<JSONNode> root;
-  
+
   try {
     root = libjson::parse(json_data);
-    
+
     // Check if there are data
     const auto& error = root.get().at("error");
   }
-  
+
   catch (...) {
   }
-  
+
   return root;
 }
 
@@ -301,7 +301,7 @@ boost::optional<JSONNode> kraken_interface::get_order_book(const std::string& pa
 
   auto const json_data = m_kapi.public_method("Depth", in);
   boost::optional<JSONNode> root;
-  
+
   try {
     root = libjson::parse(json_data);
   }
@@ -444,8 +444,9 @@ std::string kraken_interface::get_trade_balance(const std::string& aclass,
 //! - Note: Unless otherwise stated, costs, fees, prices, and volumes are in the asset pair's scale, not the currency's scale. For example, if the asset pair uses a lot size that has a scale of 8, the volume will use a scale of 8, even if the currency it represents only has a scale of 2. Similarly, if the asset pair's pricing scale is 5, the scale will remain as 5, even if the underlying currency has a scale of 8.
 //!
 */
-std::string kraken_interface::get_open_orders(const boost::optional<std::string>& trades,
-                                              const boost::optional<std::string>& userref) {
+boost::optional<kraken_interface::order_data_t>
+kraken_interface::get_open_orders(const boost::optional<std::string>& trades,
+                                  const boost::optional<std::string>& userref) {
   Input in;
   if (trades) {
     in.insert(make_pair("trades", trades.get()));
@@ -455,7 +456,50 @@ std::string kraken_interface::get_open_orders(const boost::optional<std::string>
     in.insert(make_pair("userref", userref.get()));
   }
 
-  return m_kapi.private_method("OpenOrders", in);
+  auto const json_data = m_kapi.private_method("OpenOrders", in);
+  JSONNode root;
+
+  try {
+    root = libjson::parse(json_data);
+    auto const& result = root.at("result");
+    // Check for errors.
+    if (!root.at("error").empty() || result.empty()) {
+      return boost::none;
+    }
+
+    auto const& open_orders_data = result.at("open");
+    order_data_t open_orders = {};
+
+    for(JSONNode::const_iterator order =  open_orders_data.begin(); order != open_orders_data.end(); order++) {
+      std::unordered_map<std::string, std::string> order_row;
+      order_row["id"]       = order->name();
+      order_row["refid"]    = order->at("refid").as_string();
+      order_row["userref"]  = order->at("userref").as_string();
+      order_row["status"]   = order->at("status").as_string();
+      order_row["opentm"]   = order->at("opentm").as_string();
+      order_row["starttm"]  = order->at("starttm").as_string();
+      order_row["expiretm"] = order->at("expiretm").as_string();
+
+      order_row["pair"]      = order->at("descr").at("pair").as_string();
+      order_row["type"]      = order->at("descr").at("type").as_string();
+      order_row["ordertype"] = order->at("descr").at("ordertype").as_string();
+      order_row["price"]     = order->at("descr").at("price").as_string();
+      order_row["price2"]    = order->at("descr").at("price2").as_string();
+      order_row["leverage"]  = order->at("descr").at("leverage").as_string();
+      order_row["order"]     = order->at("descr").at("order").as_string();
+
+      open_orders.push_back(order_row);
+
+    }
+
+    return open_orders;
+
+  } catch (...) {
+
+  }
+
+  return boost::none;
+
 }
 
 /*
@@ -781,22 +825,21 @@ boost::optional<JSONNode> kraken_interface::add_standard_order(const order& orde
   boost::optional<JSONNode> root;
   std::string json_data = m_kapi.private_method("AddOrder", in);
   std::cout << json_data << std::endl;
-    
+
   try {
     root = libjson::parse(json_data);
-      
+
     // Check if there are data
     const auto& error = root.get().at("error");
+
     if (error == "EService:Unavailable") {
       return boost::none;
     }
-     
+
   }
   catch (...) {
   }
 
-  // delay then try again
-  
   return root;
 }
 
