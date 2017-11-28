@@ -50,6 +50,7 @@ public:
                                         order::side_t buy_sell,
                                         double volume,
                                         double limit_price,
+                                        int userref,
                                         bool validate = true);
 
   

@@ -14,6 +14,7 @@
 
 #include "../src/kraken_interface.hpp"
 #include "libjson/libjson.h"
+#include <iostream>
 
 
 BOOST_AUTO_TEST_CASE(get_order_book) {
@@ -22,7 +23,7 @@ BOOST_AUTO_TEST_CASE(get_order_book) {
   const auto root = api_intfc.get_order_book("XXBTZEUR", 5);
 
   BOOST_REQUIRE_EQUAL(root == boost::none, false);
-  
+
   // Check for errors.
   BOOST_CHECK_EQUAL(root.get().at("error").empty(), true);
 
@@ -81,29 +82,35 @@ BOOST_AUTO_TEST_CASE(get_tradable_pairs) {
 
 BOOST_AUTO_TEST_CASE(get_open_orders) {
 
-  kraken_interface api_intfc;  
+  kraken_interface api_intfc;
   auto result  = api_intfc.get_open_orders(boost::optional<std::string>(),
                                            boost::optional<std::string>());
 
   BOOST_REQUIRE_EQUAL(result == boost::none, false);
-  
+
   for (auto const& row : result.get() ) {
     for (auto const& val : row) {
       std::cout<< val.first << " -- " << val.second << std::endl;
     }
-    
+
   }
 
 }
 
 BOOST_AUTO_TEST_CASE(add_standard_order) {
 
-  order order_ = order::create_limit_order("BCHEUR", order::side_t::sell, 1, 11150);
+  int volume = 1;
+  int userref = 0;
+  order order_ = order::create_limit_order("BCHEUR",
+                                           order::side_t::sell,
+                                           volume,
+                                           11150,
+                                           userref);
   kraken_interface api_intfc;
   int tries = 3;
   boost::optional<JSONNode> root;
 
-  auto fn = [&]() ->boost::optional<JSONNode> { return api_intfc.add_standard_order(order_); }; 
+  auto fn = [&]() ->boost::optional<JSONNode> { return api_intfc.add_standard_order(order_); };
   root = api_intfc.send_api_request(3, fn);
 
   BOOST_REQUIRE_EQUAL(root == boost::none, false);

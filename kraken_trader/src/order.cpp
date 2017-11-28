@@ -23,6 +23,7 @@ const order order::create_limit_order(const std::string& pair,
                                       order::side_t buy_sell,
                                       double volume,
                                       double limit_price,
+                                      int userref,
                                       bool validate) {
   order order_;
   order_.pair = pair;
@@ -35,7 +36,7 @@ const order order::create_limit_order(const std::string& pair,
   // order_.oflags;
   order_.starttm =  0;
   order_.expiretm = 0;
-  // order_.userref;cpc
+  order_.userref = std::to_string(userref);
   order_.validate = validate;
   return order_;
 }

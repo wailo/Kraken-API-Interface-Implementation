@@ -26,11 +26,23 @@ class trading_agent
   //! Move assignment operator
   trading_agent& operator=(trading_agent &&other) = default;
 
+  //! send new order
+  void new_order( const order& p_order);
+
+  int cancel_order(const std::string& order_id);
+
+  int cancel_all_orders();
+
+
  private:
-  
+
+  using orders_storage_t = kraken_interface::order_data_t;
+
   kraken_interface m_api_intfc;
-  std::vector<order> open_orders;
-  
+
+  orders_storage_t open_orders;
+
+
 };
 
 

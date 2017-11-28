@@ -1,5 +1,7 @@
 #include "kraken_interface.hpp"
 
+#include <iostream>
+
 kraken_interface::kraken_interface():
     m_kapi("ap17PlvHnPKnshgUp6BLN0ugzoacA3W12W2lphhp2zHoAFhMuKfcDihz",
            "npeixUc5WShaqIsqV9Kk2dgnQs3zBFMjCg45hK8MS93W4o/E2tcjOviFwn+zvLT6ty+plFEusbPlNQrqKmh82w==")
@@ -824,17 +826,19 @@ boost::optional<JSONNode> kraken_interface::add_standard_order(const order& orde
   auto const& in =  order_to_kraken_order(order_);
   boost::optional<JSONNode> root;
   std::string json_data = m_kapi.private_method("AddOrder", in);
-  std::cout << json_data << std::endl;
 
   try {
     root = libjson::parse(json_data);
 
     // Check if there are data
-    const auto& error = root.get().at("error");
-
-    if (error == "EService:Unavailable") {
+    const auto& errors = root.get().at("error");
+    if (!errors.empty())
+    {
+      std::cout << json_data << std::endl;
       return boost::none;
     }
+    // if (error == "[\"EService:Unavailable\"]") {
+    //}
 
   }
   catch (...) {
@@ -856,10 +860,28 @@ boost::optional<JSONNode> kraken_interface::add_standard_order(const order& orde
 //! - Note: txid may be a user reference id.
 //!
 */
-std::string kraken_interface::cancel_open_order(const std::string& txid) {
+boost::optional<JSONNode> kraken_interface::cancel_open_order(const std::string& txid) {
   Input in;
+  boost::optional<JSONNode> root;
   in.insert(make_pair("txid", txid));
-  return m_kapi.private_method("CancelOrder", in);
+  auto json_data =  m_kapi.private_method("CancelOrder", in);
+  try {
+    root = libjson::parse(json_data);
+
+    // Check if there are data
+    const auto& errors = root.get().at("error");
+    if (!errors.empty()) {
+
+      std::cout << json_data  << std::endl;
+      return boost::none;
+    }
+
+  }
+  catch (...) {
+  }
+
+  return root;
+
 }
 
 //! //////////////////////////////////////////////////////////////////////////////////////////////////// ** id="private-user-funding" Private user funding
