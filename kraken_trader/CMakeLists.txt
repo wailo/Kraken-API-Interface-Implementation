@@ -34,6 +34,10 @@ find_package(Boost COMPONENTS unit_test_framework REQUIRED)
 include_directories (${BOOST_INCLUDE_DIRS} KRAKENAPI)
 #list(APPEND LIBS ${BOOST_LIBRARIES}) 
 
+#-------------------------------------------------------------------------------
+# Find ncurses
+#-------------------------------------------------------------------------------
+find_package(Curses REQUIRED)
 
 #-------------------------------------------------------------------------------
 # Add the executable 'main'
@@ -41,8 +45,9 @@ include_directories (${BOOST_INCLUDE_DIRS} KRAKENAPI)
 FILE(GLOB SRCFILES src/*.cpp)
 add_executable (${PROJECT_NAME} ${SRCFILES})
 set_target_properties (${PROJECT_NAME} PROPERTIES 
-  COMPILE_DEFINITIONS_DEBUG "JSON_DEBUG;JSON_SAFE;JSON_ISO_STRICT")
-target_link_libraries (${PROJECT_NAME} ${LIBS} kapi)
+  COMPILE_DEFINITIONS_DEBUG "JSON_DEBUG;JSON_SAFE;JSON_ISO_STRICT"
+  RUNTIME_OUTPUT_DIRECTORY  ${CMAKE_CURRENT_SOURCE_DIR}/bin)
+target_link_libraries (${PROJECT_NAME} ${LIBS} kapi ${CURSES_LIBRARIES})
 
 
 #Prep ourselves for compiling boost

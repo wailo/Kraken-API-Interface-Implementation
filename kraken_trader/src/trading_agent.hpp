@@ -8,6 +8,9 @@
 class trading_agent
 {
  public:
+
+  using orders_storage_t = kraken_interface::order_data_t;
+
   //! Default constructor
   trading_agent();
 
@@ -33,14 +36,14 @@ class trading_agent
 
   int cancel_all_orders();
 
+  const orders_storage_t open_orders() const;
 
  private:
 
-  using orders_storage_t = kraken_interface::order_data_t;
 
   kraken_interface m_api_intfc;
 
-  orders_storage_t open_orders;
+  orders_storage_t m_open_orders;
 
 
 };

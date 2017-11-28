@@ -2,7 +2,7 @@
 #define KRAKEN_INTERFACE_H
 
 #include "order.hpp"
-#include "../../krakenapi/kraken/kclient.hpp"
+#include "kraken/kclient.hpp"
 
 #include <unordered_map>
 #include <boost/optional.hpp>

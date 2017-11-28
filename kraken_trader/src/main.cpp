@@ -1,21 +1,19 @@
 #include <iostream>
 #include <stdexcept>
 
-#include "../../krakenapi/kraken/kclient.hpp"
-#include "trading_agent.hpp"
+#include "kraken/kclient.hpp"
+#include "view_controller.hpp"
 
 using namespace std;
 using namespace Kraken;
 
 //------------------------------------------------------------------------------
 
-int main() 
-{ 
+int main()
+{
   curl_global_init(CURL_GLOBAL_ALL);
-  trading_agent trader;
-  // order order  = order::create_limit_order("BCHEUR", order::side_t::sell, 1, 5900, 1, false);
-  // trader.new_order(order);
-  // trader.cancel_all_orders();
+  view_controller trading_platform;
+
   curl_global_cleanup();
   return 0;
 }

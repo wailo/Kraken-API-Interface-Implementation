@@ -9,7 +9,7 @@ trading_agent::trading_agent()
     auto fn_open_orders = [&](){ return m_api_intfc.get_open_orders(boost::none, boost::none);};
     auto open_orders_res =  m_api_intfc.send_api_request(3, fn_open_orders);
     if (open_orders_res) {
-      open_orders = open_orders_res.get();
+      m_open_orders = open_orders_res.get();
     }
     else
       {
@@ -33,7 +33,7 @@ int trading_agent::cancel_order(const std::string& order_id) {
 
 int trading_agent::cancel_all_orders() {
   int count = 0;
-  for ( auto& order : open_orders ) {
+  for ( auto& order : m_open_orders ) {
     const auto& id = order["id"];
     count+= cancel_order(id);
   }
@@ -46,6 +46,11 @@ int trading_agent::cancel_all_orders() {
 void trading_agent::new_order( const order& p_order) {
     auto fn_new_order = [&](){ return m_api_intfc.add_standard_order(p_order);};
     auto new_orders_res =  m_api_intfc.send_api_request(4, fn_new_order);
+}
+
+
+const trading_agent::orders_storage_t trading_agent::open_orders() const {
+  return m_open_orders;
 }
 
 
