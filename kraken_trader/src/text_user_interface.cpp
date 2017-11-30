@@ -17,20 +17,22 @@ bool text_user_interface::set_orders(const std::vector<std::string> orders) {
 }
 
 
-void text_user_interface::setup_windows() {
+void text_user_interface::setup_windows(float y_min, float x_min, float y_max, float x_max) {
 
+  int y_min_screen, x_min_screen,  y_max_screen, x_max_screen;
+  getbegyx(stdscr, y_min_screen, x_min_screen);
+  getmaxyx(stdscr, y_max_screen, x_max_screen);  
 
+  y_min_screen = y_min * y_max_screen;
+  y_max_screen = y_max * y_max_screen;
 
-  int y, x, y_min, x_min, y_max, x_max;
-  getyx(stdscr, y, x);
-  getbegyx(stdscr, y_min, x_min);
-  getmaxyx(stdscr, y_max, x_max);
+  x_min_screen = x_min * x_min_screen;
+  x_max_screen = x_max * x_max_screen;
 
-  int height = y_max - y_min ;
-  int width  = x_max - x_min ;
-
-
-  WINDOW * menu_win = newwin(10 , x_max-12, y_max-18 , 5);
+  WINDOW * menu_win = newwin(10,
+                             y_max_screen,
+                             y_max_screen,
+                             x_max_screen);
   box(menu_win, 0,0);
   refresh();
   wrefresh(menu_win);

@@ -15,7 +15,7 @@ view_controller::view_controller() {
   }
 
   m_text_user_interface.set_orders(order_menu_list);
-  m_text_user_interface.setup_windows();
+  m_text_user_interface.setup_windows(1.0, 1.0, 0.1, 0.1);
 
   //  order order  = order::create_limit_order("BCHEUR", order::side_t::sell, 1, 5900, 1);
   //  // trader.new_order(order);
