@@ -29,10 +29,10 @@ void text_user_interface::setup_windows(float y_min, float x_min, float y_max, f
   x_min_screen = x_min * x_min_screen;
   x_max_screen = x_max * x_max_screen;
 
-  WINDOW * menu_win = newwin(10,
-                             y_max_screen,
-                             y_max_screen,
-                             x_max_screen);
+  WINDOW * menu_win = newwin(20, // nlines 
+                             60, // ncolumns
+                             18,
+                             5);
   box(menu_win, 0,0);
   refresh();
   wrefresh(menu_win);
