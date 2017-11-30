@@ -11,6 +11,12 @@ text_user_interface::text_user_interface() {
 
 }
 
+bool text_user_interface::set_orders(const std::vector<std::string> orders) {
+  m_orders = orders;
+  return true;
+}
+
+
 void text_user_interface::setup_windows() {
 
 
@@ -23,6 +29,7 @@ void text_user_interface::setup_windows() {
   int height = y_max - y_min ;
   int width  = x_max - x_min ;
 
+
   WINDOW * menu_win = newwin(10 , x_max-12, y_max-18 , 5);
   box(menu_win, 0,0);
   refresh();
@@ -30,18 +37,17 @@ void text_user_interface::setup_windows() {
 
   keypad(menu_win, true);
 
-  std::array<std::string, 3> choices {"Walk", "Jog", "Run" };
   int  choice;
   int highlight = 0;
 
 
   while (true) {
-    for (int i=0; i<choices.size(); ++i) {
+    for (int i=0; i<m_orders.size(); ++i) {
       if (i == highlight) {
         wattron(menu_win, A_REVERSE);
       }
 
-      mvwprintw(menu_win, i+1, 1, choices[i].c_str());
+      mvwprintw(menu_win, i+1, 1, m_orders[i].c_str());
       wattroff(menu_win, A_REVERSE);
     }
 
@@ -68,7 +74,7 @@ void text_user_interface::setup_windows() {
 }
 
 
-text_user_interface::~text_user_interface() {
+text_user_interface::~text_user_interface() noexcept {
 
   endwin();
 }

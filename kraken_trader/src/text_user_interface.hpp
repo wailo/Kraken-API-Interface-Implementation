@@ -2,7 +2,7 @@
 #define TEXT_USER_INTERFACE_H
 
 #include <ncurses.h>
-
+#include <vector>
 
 class text_user_interface
 {
@@ -26,10 +26,12 @@ class text_user_interface
   // text_user_interface& operator=(text_user_interface &&other) noexcept;
 
   void setup_windows();
+  bool set_orders(const std::vector<std::string> orders);
 
-
- protected:
  private:
+
+  std::vector<std::string> m_orders;
+
 };
 
 #endif /* TEXT_USER_INTERFACE_H */
