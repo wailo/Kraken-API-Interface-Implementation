@@ -1,11 +1,11 @@
 cmake_minimum_required (VERSION 2.6)
 project (KRAKEN_TRADER)
 
-add_definitions("-std=c++14" -stdlib=libc++)
+add_definitions("-std=c++14")
 
 #-------------------------------------------------------------------------------
 IF (CMAKE_CXX_COMPILER_ID STREQUAL Clang)
-	add_definitions("-Wno-tautological-compare")
+	add_definitions("-Wno-tautological-compare" -stdlib=libc++)
 
 ENDIF()
 
