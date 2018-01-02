@@ -36,7 +36,7 @@ class trading_agent
 
   int cancel_all_orders();
 
-  const orders_storage_t open_orders() const;
+  const orders_storage_t open_orders();
 
  private:
 

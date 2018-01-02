@@ -1,7 +1,6 @@
 #ifndef TEXT_USER_INTERFACE_H
 #define TEXT_USER_INTERFACE_H
 
-#include <ncurses.h>
 #include <vector>
 
 class text_user_interface
@@ -25,8 +24,7 @@ class text_user_interface
   // //! Move assignment operator
   // text_user_interface& operator=(text_user_interface &&other) noexcept;
 
-  void setup_windows(float y_min, float x_min, float y_max, float x_max);
-  bool set_orders(const std::vector<std::string> orders);
+  bool set_orders(const std::vector<std::string>& orders);
 
  private:
 

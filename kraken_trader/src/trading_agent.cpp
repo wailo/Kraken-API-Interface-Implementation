@@ -3,19 +3,6 @@
 
 trading_agent::trading_agent()
 {
-
-  // get open orders;
-  {
-    auto fn_open_orders = [&](){ return m_api_intfc.get_open_orders(boost::none, boost::none);};
-    auto open_orders_res =  m_api_intfc.send_api_request(3, fn_open_orders);
-    if (open_orders_res) {
-      m_open_orders = open_orders_res.get();
-    }
-    else
-      {
-        throw std::runtime_error("Can't get open orders.");
-      }
-  }
 }
 
 
@@ -49,7 +36,21 @@ void trading_agent::new_order( const order& p_order) {
 }
 
 
-const trading_agent::orders_storage_t trading_agent::open_orders() const {
+const trading_agent::orders_storage_t trading_agent::open_orders() {
+
+   // get open orders;
+  {
+    auto fn_open_orders = [&](){ return m_api_intfc.get_open_orders(boost::none, boost::none);};
+    auto open_orders_res =  m_api_intfc.send_api_request(3, fn_open_orders);
+    if (open_orders_res) {
+      m_open_orders = open_orders_res.get();
+    }
+    else
+      {
+        throw std::runtime_error("can't get open orders.");
+      }
+  }
+  
   return m_open_orders;
 }
 
