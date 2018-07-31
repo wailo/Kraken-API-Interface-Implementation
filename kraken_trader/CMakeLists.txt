@@ -27,12 +27,6 @@ if (NOT CMAKE_BUILD_TYPE)
 endif (NOT CMAKE_BUILD_TYPE)
 message (STATUS "Build type: " ${CMAKE_BUILD_TYPE})
 
-#-------------------------------------------------------------------------------
-# Find boost
-#-------------------------------------------------------------------------------
-find_package(Boost COMPONENTS unit_test_framework REQUIRED)
-include_directories (${BOOST_INCLUDE_DIRS} KRAKENAPI)
-#list(APPEND LIBS ${BOOST_LIBRARIES}) 
 
 #-------------------------------------------------------------------------------
 # Find ncurses
