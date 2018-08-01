@@ -15,7 +15,7 @@ text_user_interface::text_user_interface() {
   cbreak();
 }
 
-bool text_user_interface::set_orders(const std::vector<std::string>& orders) {
+bool text_user_interface::set_orders(const std::vector<std::string>&& orders) {
   m_orders = orders;
   return true;
 }

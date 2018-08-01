@@ -24,7 +24,7 @@ class text_user_interface
   // //! Move assignment operator
   // text_user_interface& operator=(text_user_interface &&other) noexcept;
 
-  bool set_orders(const std::vector<std::string>& orders);
+  bool set_orders(const std::vector<std::string>&& orders);
 
  private:
 
