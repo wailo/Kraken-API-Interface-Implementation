@@ -1,12 +1,11 @@
 #ifndef VIEW_CONTROLLER_H
 #define VIEW_CONTROLLER_H
 
-#include "trading_agent.hpp"
 #include "text_user_interface.hpp"
+#include "trading_agent.hpp"
 
-class view_controller
-{
- public:
+class view_controller {
+public:
   //! Default constructor
   view_controller();
 
@@ -29,12 +28,9 @@ class view_controller
   // Send an order.
   // Cancel all orders.
 
- private:
-
+private:
   trading_agent m_trader;
   text_user_interface m_text_user_interface;
-
 };
-
 
 #endif /* VIEW_CONTROLLER_H */

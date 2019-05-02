@@ -9,8 +9,7 @@ using namespace Kraken;
 
 //------------------------------------------------------------------------------
 
-int main()
-{
+int main() {
   curl_global_init(CURL_GLOBAL_ALL);
   view_controller trading_platform;
 

@@ -1,12 +1,10 @@
 #include "text_user_interface.hpp"
-#include <ncurses.h>
-#include <form.h>
 #include <array>
+#include <form.h>
+#include <ncurses.h>
 #include <string>
 
-
-using fields_t = std::array<fieldnode*, 4>;
-
+using fields_t = std::array<fieldnode *, 4>;
 
 text_user_interface::text_user_interface() {
   /* Ncursor Start */
@@ -15,12 +13,9 @@ text_user_interface::text_user_interface() {
   cbreak();
 }
 
-bool text_user_interface::set_orders(const std::vector<std::string>&& orders) {
+bool text_user_interface::set_orders(const std::vector<std::string> &&orders) {
   m_orders = orders;
   return true;
 }
 
-text_user_interface::~text_user_interface() noexcept {
-
-  endwin();
-}
+text_user_interface::~text_user_interface() noexcept { endwin(); }

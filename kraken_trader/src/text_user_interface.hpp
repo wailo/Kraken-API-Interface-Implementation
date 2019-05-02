@@ -3,9 +3,8 @@
 
 #include <vector>
 
-class text_user_interface
-{
- public:
+class text_user_interface {
+public:
   //! Default constructor
   text_user_interface();
 
@@ -24,12 +23,10 @@ class text_user_interface
   // //! Move assignment operator
   // text_user_interface& operator=(text_user_interface &&other) noexcept;
 
-  bool set_orders(const std::vector<std::string>&& orders);
+  bool set_orders(const std::vector<std::string> &&orders);
 
- private:
-
+private:
   std::vector<std::string> m_orders;
-
 };
 
 #endif /* TEXT_USER_INTERFACE_H */

@@ -2,81 +2,79 @@
 
 #include <iostream>
 
-kraken_interface::kraken_interface():
-    m_kapi("ap17PlvHnPKnshgUp6BLN0ugzoacA3W12W2lphhp2zHoAFhMuKfcDihz",
-           "npeixUc5WShaqIsqV9Kk2dgnQs3zBFMjCg45hK8MS93W4o/E2tcjOviFwn+zvLT6ty+plFEusbPlNQrqKmh82w==")
-{
-}
+kraken_interface::kraken_interface()
+    : m_kapi("ap17PlvHnPKnshgUp6BLN0ugzoacA3W12W2lphhp2zHoAFhMuKfcDihz",
+             "npeixUc5WShaqIsqV9Kk2dgnQs3zBFMjCg45hK8MS93W4o/"
+             "E2tcjOviFwn+zvLT6ty+plFEusbPlNQrqKmh82w==") {}
 
 std::string kraken_interface::order_side_to_string(order::side_t side) {
-  if ( side == order::side_t::buy ) {
+  if (side == order::side_t::buy) {
     return "buy";
-  }
-  else if ( side == order::side_t::sell ) {
+  } else if (side == order::side_t::sell) {
     return "sell";
   }
 
   throw std::logic_error("Unknown side_t side");
 }
 
-order::side_t kraken_interface::order_side_from_string(const std::string& side) {
-  if ( side == "buy" ) {
+order::side_t
+kraken_interface::order_side_from_string(const std::string &side) {
+  if (side == "buy") {
     return order::side_t::buy;
-  }
-  else if ( side == "sell" ) {
+  } else if (side == "sell") {
     return order::side_t::sell;
   }
   throw std::logic_error("Unknown side name");
 }
 
-const std::unordered_map<order::order_type, const std::string > kraken_interface::order_types_to_string = {
-  {order::order_type::market                 , "market"},
-  {order::order_type::limit                  , "limit"},
-  {order::order_type::stop_loss              , "stop_loss"},
-  {order::order_type::take_profit            , "take_profit"},
-  {order::order_type::stop_loss_profit       , "stop_loss_profit"},
-  {order::order_type::stop_loss_profit_limit , "stop_loss_profit_limit"},
-  {order::order_type::stop_loss_limit        , "stop_loss_limit"},
-  {order::order_type::take_profit_limit      , "take_profit_limit"},
-  {order::order_type::trailing_stop          , "trailing_stop"},
-  {order::order_type::trailing_stop_limit    , "trailing_stop_limit"},
-  {order::order_type::stop_loss_and_limit    , "stop_loss_and_limit"},
-  {order::order_type::settle_position        , "settle_position"}
-};
+const std::unordered_map<order::order_type, const std::string>
+    kraken_interface::order_types_to_string = {
+        {order::order_type::market, "market"},
+        {order::order_type::limit, "limit"},
+        {order::order_type::stop_loss, "stop_loss"},
+        {order::order_type::take_profit, "take_profit"},
+        {order::order_type::stop_loss_profit, "stop_loss_profit"},
+        {order::order_type::stop_loss_profit_limit, "stop_loss_profit_limit"},
+        {order::order_type::stop_loss_limit, "stop_loss_limit"},
+        {order::order_type::take_profit_limit, "take_profit_limit"},
+        {order::order_type::trailing_stop, "trailing_stop"},
+        {order::order_type::trailing_stop_limit, "trailing_stop_limit"},
+        {order::order_type::stop_loss_and_limit, "stop_loss_and_limit"},
+        {order::order_type::settle_position, "settle_position"}};
 
-const std::unordered_map< std::string, const order::order_type> kraken_interface::order_types_to_enum = {
-  {"market"                 , order::order_type::market},
-  {"limit"                  , order::order_type::limit},
-  {"stop_loss"              , order::order_type::stop_loss},
-  {"take_profit"            , order::order_type::take_profit},
-  {"stop_loss_profit"       , order::order_type::stop_loss_profit},
-  {"stop_loss_profit_limit" , order::order_type::stop_loss_profit_limit},
-  {"stop_loss_limit"        , order::order_type::stop_loss_limit},
-  {"take_profit_limit"      , order::order_type::take_profit_limit},
-  {"trailing_stop"          , order::order_type::trailing_stop},
-  {"trailing_stop_limit"    , order::order_type::trailing_stop_limit},
-  {"stop_loss_and_limit"    , order::order_type::stop_loss_and_limit},
-  {"settle_position"        , order::order_type::settle_position}
-};
+const std::unordered_map<std::string, const order::order_type>
+    kraken_interface::order_types_to_enum = {
+        {"market", order::order_type::market},
+        {"limit", order::order_type::limit},
+        {"stop_loss", order::order_type::stop_loss},
+        {"take_profit", order::order_type::take_profit},
+        {"stop_loss_profit", order::order_type::stop_loss_profit},
+        {"stop_loss_profit_limit", order::order_type::stop_loss_profit_limit},
+        {"stop_loss_limit", order::order_type::stop_loss_limit},
+        {"take_profit_limit", order::order_type::take_profit_limit},
+        {"trailing_stop", order::order_type::trailing_stop},
+        {"trailing_stop_limit", order::order_type::trailing_stop_limit},
+        {"stop_loss_and_limit", order::order_type::stop_loss_and_limit},
+        {"settle_position", order::order_type::settle_position}};
 
-kraken_interface::Input kraken_interface::order_to_kraken_order(const order& order_)
-{
+kraken_interface::Input
+kraken_interface::order_to_kraken_order(const order &order_) {
   Input data;
-  data["pair"]      = order_.pair;
-  data["type"]      = order_side_to_string(order_.side);
+  data["pair"] = order_.pair;
+  data["type"] = order_side_to_string(order_.side);
   data["ordertype"] = order_types_to_string.at(order_.ordertype);
-  data["price"]     = std::to_string(order_.price);
-  data["price2"]    = std::to_string(order_.price2);
-  data["volume"]    = std::to_string(order_.volume);
-  data["leverage"]  = order_.leverage;
+  data["price"] = std::to_string(order_.price);
+  data["price2"] = std::to_string(order_.price2);
+  data["volume"] = std::to_string(order_.volume);
+  data["leverage"] = order_.leverage;
 
   if (!order_.oflags.empty()) {
     data["oflags"] = order_.oflags;
   }
 
-  data["starttm"]   = std::to_string(order_.starttm);
-  data["expiretm"]  = std::to_string(order_.expiretm);
-  data["userref"]   = order_.userref;
+  data["starttm"] = std::to_string(order_.starttm);
+  data["expiretm"] = std::to_string(order_.expiretm);
+  data["userref"] = order_.userref;
 
   if (order_.validate) {
     data["validate"] = "true";
@@ -86,26 +84,25 @@ kraken_interface::Input kraken_interface::order_to_kraken_order(const order& ord
 }
 
 // from kraken map
-order kraken_interface::from_kraken_order(kraken_interface::Input& data)
-{
+order kraken_interface::from_kraken_order(kraken_interface::Input &data) {
   order order_;
-  order_.pair      = data["pair"];
-  order_.side      = order_side_from_string(data["type"]);
+  order_.pair = data["pair"];
+  order_.side = order_side_from_string(data["type"]);
   order_.ordertype = order_types_to_enum.at(data["ordertype"]);
-  order_.price     = std::stod(data["price"]);
-  order_.price2    = std::stod(data["price2"]);
-  order_.volume    = std::stod(data["volume"]);
-  order_.leverage  = data["leverage"];
-  order_.oflags    = data["oflags"];
-  order_.starttm   = std::stoi(data["starttm"]);
-  order_.expiretm  = std::stoi(data["expiretm"]);
-  order_.userref   = data["userref"];
-  order_.validate  = (data.find("validate") != data.end());
+  order_.price = std::stod(data["price"]);
+  order_.price2 = std::stod(data["price2"]);
+  order_.volume = std::stod(data["volume"]);
+  order_.leverage = data["leverage"];
+  order_.oflags = data["oflags"];
+  order_.starttm = std::stoi(data["starttm"]);
+  order_.expiretm = std::stoi(data["expiretm"]);
+  order_.userref = data["userref"];
+  order_.validate = (data.find("validate") != data.end());
   return order_;
 }
 
-
-//////////////////////////////////////////////////////////////////////////////////////////////////// ** id="public-market-data" Public market data
+////////////////////////////////////////////////////////////////////////////////////////////////////
+///** id="public-market-data" Public market data
 /*
 //! Get server time
 //! //!
@@ -113,7 +110,8 @@ order kraken_interface::from_kraken_order(kraken_interface::Input& data)
 //! unixtime =  as unix timestamp
 //! rfc1123 = as RFC 1123 time format
 //!
-//!E - Note: This is to aid in approximating the skew time between the server and client.
+//!E - Note: This is to aid in approximating the skew time between the server
+and client.
 //!
 */
 std::string kraken_interface::get_server_time() {
@@ -129,7 +127,8 @@ std::string kraken_interface::get_server_time() {
 //!     info = all info (default)
 //! aclass = asset class (optional):
 //!     currency (default)
-//! asset = comma delimited list of assets to get info on (optional.  default = all for given asset class)
+//! asset = comma delimited list of assets to get info on (optional.  default =
+all for given asset class)
 //!
 //! - Result: array of asset names and their info
 //! asset_name = asset name
@@ -140,9 +139,10 @@ std::string kraken_interface::get_server_time() {
 //!
 //!
 */
-boost::optional<JSONNode> kraken_interface::get_asset_info(const boost::optional<std::string>& info,
-                                          const boost::optional<std::string>& aclass,
-                                          const boost::optional<std::string>& asset) {
+boost::optional<JSONNode>
+kraken_interface::get_asset_info(const boost::optional<std::string> &info,
+                                 const boost::optional<std::string> &aclass,
+                                 const boost::optional<std::string> &asset) {
   Input in;
   if (info) {
     in["info"] = info.get();
@@ -161,12 +161,10 @@ boost::optional<JSONNode> kraken_interface::get_asset_info(const boost::optional
 
   try {
     root = libjson::parse(json_data);
-  }
-  catch (...) {
+  } catch (...) {
   }
   // implement generic while loop here
   return root;
-
 }
 
 /*
@@ -178,7 +176,8 @@ boost::optional<JSONNode> kraken_interface::get_asset_info(const boost::optional
 //!     leverage = leverage info
 //!     fees = fees schedule
 //!     margin = margin info
-//! pair = comma delimited list of asset pairs to get info on (optional.  default = all)
+//! pair = comma delimited list of asset pairs to get info on (optional.
+default = all)
 //!
 //! - Result: array of pair names and their info
 //! pair_name = pair name
@@ -194,7 +193,8 @@ boost::optional<JSONNode> kraken_interface::get_asset_info(const boost::optional
 //!     leverage_buy = array of leverage amounts available when buying
 //!     leverage_sell = array of leverage amounts available when selling
 //!     fees = fee schedule array in [volume, percent fee] tuples
-//!     fees_maker = maker fee schedule array in [volume, percent fee] tuples (if on maker/taker)
+//!     fees_maker = maker fee schedule array in [volume, percent fee] tuples
+(if on maker/taker)
 //!     fee_volume_currency = volume discount currency
 //!     margin_call = margin call level
 //!     margin_stop = stop-out/liquidation margin level
@@ -204,8 +204,9 @@ boost::optional<JSONNode> kraken_interface::get_asset_info(const boost::optional
 //! maker/taker, they will only be given in "fees".
 //!
 */
-boost::optional<JSONNode> kraken_interface::get_tradable_pairs(const boost::optional<std::string>& info,
-                                                               const boost::optional<std::string>& pair) {
+boost::optional<JSONNode>
+kraken_interface::get_tradable_pairs(const boost::optional<std::string> &info,
+                                     const boost::optional<std::string> &pair) {
   Input in;
   if (info) {
     in["info"] = info.get();
@@ -222,7 +223,7 @@ boost::optional<JSONNode> kraken_interface::get_tradable_pairs(const boost::opti
     root = libjson::parse(json_data);
 
     // Check if there are data
-    const auto& error = root.get().at("error");
+    const auto &error = root.get().at("error");
   }
 
   catch (...) {
@@ -252,7 +253,7 @@ boost::optional<JSONNode> kraken_interface::get_tradable_pairs(const boost::opti
 //! - Note: Today's prices start at 00:00:00 UTC
 //!
 */
-std::string kraken_interface::get_ticker_info(const std::string& pair) {
+std::string kraken_interface::get_ticker_info(const std::string &pair) {
   Input in;
   in.insert(make_pair("pair", pair));
   return m_kapi.public_method("Ticker", in);
@@ -269,13 +270,16 @@ std::string kraken_interface::get_ticker_info(const std::string& pair) {
 //!
 //! - Result: array of pair name and OHLC data
 //! pair_name = pair name
-//!     array of array entries(time, open, high, low, close, vwap, volume, count)
+//!     array of array entries(time, open, high, low, close, vwap, volume,
+count)
 //! last = id to be used as since when polling for new, committed OHLC data
 //!
-//! - Note: the last entry in the OHLC array is for the current, not-yet-committed frame and will always be present, regardless of the value of &quot;since&quot;.
+//! - Note: the last entry in the OHLC array is for the current,
+not-yet-committed frame and will always be present, regardless of the value of
+&quot;since&quot;.
 //!
 */
-std::string kraken_interface::get_ohlc_data(const Input& in) {
+std::string kraken_interface::get_ohlc_data(const Input &in) {
   return m_kapi.public_method("OHLC", in);
 }
 
@@ -292,8 +296,9 @@ std::string kraken_interface::get_ohlc_data(const Input& in) {
 //!     bids = bid side array of array entries(price, volume, timestamp)
 //!
 */
-boost::optional<JSONNode> kraken_interface::get_order_book(const std::string& pair,
-                                                           const boost::optional<int>& count) {
+boost::optional<JSONNode>
+kraken_interface::get_order_book(const std::string &pair,
+                                 const boost::optional<int> &count) {
   Input in;
   in.insert(make_pair("pair", pair));
 
@@ -306,8 +311,7 @@ boost::optional<JSONNode> kraken_interface::get_order_book(const std::string& pa
 
   try {
     root = libjson::parse(json_data);
-  }
-  catch (...) {
+  } catch (...) {
   }
 
   return root;
@@ -322,12 +326,13 @@ boost::optional<JSONNode> kraken_interface::get_order_book(const std::string& pa
 //!
 //! - Result: array of pair name and recent trade data
 //! pair_name = pair name
-//!     array of array entries(price, volume, time, buy/sell, market/limit, miscellaneous)
+//!     array of array entries(price, volume, time, buy/sell, market/limit,
+miscellaneous)
 //! last = id to be used as since when polling for new trade data
 //!
 */
-std::string kraken_interface::get_recent_trades(const std::string& pair,
-                                                const std::string& since)  {
+std::string kraken_interface::get_recent_trades(const std::string &pair,
+                                                const std::string &since) {
   Input in;
   in.insert(make_pair("pair", pair));
   in.insert(make_pair("since", since));
@@ -346,23 +351,27 @@ std::string kraken_interface::get_recent_trades(const std::string& pair,
 //!     array of array entries(time, bid, ask)
 //! last = id to be used as since when polling for new spread data
 //!
-//! - Note: &quot;since&quot; is inclusive so any returned data with the same time as the previous set should overwrite all of the previous set's entries at that time
+//! - Note: &quot;since&quot; is inclusive so any returned data with the same
+time as the previous set should overwrite all of the previous set's entries at
+that time
 //!
 */
-std::string kraken_interface::get_recent_spread_data(const std::string& pair) {
+std::string kraken_interface::get_recent_spread_data(const std::string &pair) {
   Input in;
   in.insert(make_pair("pair", pair));
   return m_kapi.public_method("Spread", in);
 }
 
 /*
-//! //////////////////////////////////////////////////////////////////////////////////////////////////// ** id="private-user-data" Private user data
+//!
+////////////////////////////////////////////////////////////////////////////////////////////////////
+** id="private-user-data" Private user data
 //! *** //! Get account balance
 //! //!
 //! - Result: array of asset names and balance amount
 //!
 */
-std::string kraken_interface::get_account_balance(const Input& in) {
+std::string kraken_interface::get_account_balance(const Input &in) {
   return m_kapi.private_method("Balance", in);
 }
 
@@ -382,14 +391,16 @@ std::string kraken_interface::get_account_balance(const Input& in) {
 //! c = cost basis of open positions
 //! v = current floating valuation of open positions
 //! e = equity = trade balance + unrealized net profit/loss
-//! mf = free margin = equity - initial margin (maximum margin available to open new positions)
+//! mf = free margin = equity - initial margin (maximum margin available to open
+new positions)
 //! ml = margin level = (equity / initial margin) * 100
 //!
-//! - Note: Rates used for the floating valuation is the midpoint of the best bid and ask prices
+//! - Note: Rates used for the floating valuation is the midpoint of the best
+bid and ask prices
 //!
 */
-std::string kraken_interface::get_trade_balance(const std::string& aclass,
-                                                const std::string& asset) {
+std::string kraken_interface::get_trade_balance(const std::string &aclass,
+                                                const std::string &asset) {
   Input in;
   in.insert(make_pair("aclass", aclass));
   in.insert(make_pair("asset", asset));
@@ -400,7 +411,8 @@ std::string kraken_interface::get_trade_balance(const std::string& aclass,
 //! *** //! Get open orders
 //! //!
 //! - Input:
-//! trades = whether or not to include trades in output (optional.  default = false)
+//! trades = whether or not to include trades in output (optional.  default =
+false)
 //! userref = restrict results to given user reference id (optional)
 //!
 //! - Result: array of order info in open array with txid as the key
@@ -430,7 +442,8 @@ std::string kraken_interface::get_trade_balance(const std::string& aclass,
 //! fee = total fee (quote currency)
 //! price = average price (quote currency unless viqc set in oflags)
 //! stopprice = stop price (quote currency, for trailing stops)
-//! limitprice = triggered limit price (quote currency, when limit based order type triggered)
+//! limitprice = triggered limit price (quote currency, when limit based order
+type triggered)
 //! misc = comma delimited list of miscellaneous info
 //!     stopped = triggered by stop price
 //!     touched = triggered by touch price
@@ -441,14 +454,20 @@ std::string kraken_interface::get_trade_balance(const std::string& aclass,
 //!     fcib = prefer fee in base currency (default if selling)
 //!     fciq = prefer fee in quote currency (default if buying)
 //!     nompp = no market price protection
-//! trades = array of trade ids related to order (if trades info requested and data available)
+//! trades = array of trade ids related to order (if trades info requested and
+data available)
 //!
-//! - Note: Unless otherwise stated, costs, fees, prices, and volumes are in the asset pair's scale, not the currency's scale. For example, if the asset pair uses a lot size that has a scale of 8, the volume will use a scale of 8, even if the currency it represents only has a scale of 2. Similarly, if the asset pair's pricing scale is 5, the scale will remain as 5, even if the underlying currency has a scale of 8.
+//! - Note: Unless otherwise stated, costs, fees, prices, and volumes are in the
+asset pair's scale, not the currency's scale. For example, if the asset pair
+uses a lot size that has a scale of 8, the volume will use a scale of 8, even if
+the currency it represents only has a scale of 2. Similarly, if the asset pair's
+pricing scale is 5, the scale will remain as 5, even if the underlying currency
+has a scale of 8.
 //!
 */
 boost::optional<kraken_interface::order_data_t>
-kraken_interface::get_open_orders(const boost::optional<std::string>& trades,
-                                  const boost::optional<std::string>& userref) {
+kraken_interface::get_open_orders(const boost::optional<std::string> &trades,
+                                  const boost::optional<std::string> &userref) {
   Input in;
   if (trades) {
     in.insert(make_pair("trades", trades.get()));
@@ -463,54 +482,54 @@ kraken_interface::get_open_orders(const boost::optional<std::string>& trades,
 
   try {
     root = libjson::parse(json_data);
-    auto const& result = root.at("result");
+    auto const &result = root.at("result");
     // Check for errors.
     if (!root.at("error").empty() || result.empty()) {
       return boost::none;
     }
 
-    auto const& open_orders_data = result.at("open");
+    auto const &open_orders_data = result.at("open");
     order_data_t open_orders = {};
 
-    for(JSONNode::const_iterator order =  open_orders_data.begin(); order != open_orders_data.end(); order++) {
+    for (JSONNode::const_iterator order = open_orders_data.begin();
+         order != open_orders_data.end(); order++) {
       std::unordered_map<std::string, std::string> order_row;
-      order_row["id"]       = order->name();
-      order_row["refid"]    = order->at("refid").as_string();
-      order_row["userref"]  = order->at("userref").as_string();
-      order_row["status"]   = order->at("status").as_string();
-      order_row["opentm"]   = order->at("opentm").as_string();
-      order_row["starttm"]  = order->at("starttm").as_string();
+      order_row["id"] = order->name();
+      order_row["refid"] = order->at("refid").as_string();
+      order_row["userref"] = order->at("userref").as_string();
+      order_row["status"] = order->at("status").as_string();
+      order_row["opentm"] = order->at("opentm").as_string();
+      order_row["starttm"] = order->at("starttm").as_string();
       order_row["expiretm"] = order->at("expiretm").as_string();
 
-      order_row["pair"]      = order->at("descr").at("pair").as_string();
-      order_row["type"]      = order->at("descr").at("type").as_string();
+      order_row["pair"] = order->at("descr").at("pair").as_string();
+      order_row["type"] = order->at("descr").at("type").as_string();
       order_row["ordertype"] = order->at("descr").at("ordertype").as_string();
-      order_row["price"]     = order->at("descr").at("price").as_string();
-      order_row["price2"]    = order->at("descr").at("price2").as_string();
-      order_row["leverage"]  = order->at("descr").at("leverage").as_string();
-      order_row["order"]     = order->at("descr").at("order").as_string();
+      order_row["price"] = order->at("descr").at("price").as_string();
+      order_row["price2"] = order->at("descr").at("price2").as_string();
+      order_row["leverage"] = order->at("descr").at("leverage").as_string();
+      order_row["order"] = order->at("descr").at("order").as_string();
 
       open_orders.push_back(order_row);
-
     }
 
     return open_orders;
 
   } catch (...) {
-
   }
 
   return boost::none;
-
 }
 
 /*
 //! *** //! Get closed orders
 //! //!
 //! - Input:
-//! trades = whether or not to include trades in output (optional.  default = false)
+//! trades = whether or not to include trades in output (optional.  default =
+false)
 //! userref = restrict results to given user reference id (optional)
-//! start = starting unix timestamp or order tx id of results (optional.  exclusive)
+//! start = starting unix timestamp or order tx id of results (optional.
+exclusive)
 //! end = ending unix timestamp or order tx id of results (optional.  inclusive)
 //! ofs = result offset
 //! closetime = which time to use (optional)
@@ -524,15 +543,16 @@ kraken_interface::get_open_orders(const boost::optional<std::string>& trades,
 //!     reason = additional info on status (if any)
 //! count = amount of available order info matching criteria
 //!
-//! - Note: Times given by order tx ids are more accurate than unix timestamps. If an order tx id is given for the time, the order's open time is used
+//! - Note: Times given by order tx ids are more accurate than unix timestamps.
+If an order tx id is given for the time, the order's open time is used
 //!
 */
-std::string kraken_interface::get_closed_orders(const std::string& trades,
-                                                const std::string& userref,
-                                                const std::string& start,
-                                                const std::string& end,
-                                                const std::string& ofs,
-                                                const std::string& closetime) {
+std::string kraken_interface::get_closed_orders(const std::string &trades,
+                                                const std::string &userref,
+                                                const std::string &start,
+                                                const std::string &end,
+                                                const std::string &ofs,
+                                                const std::string &closetime) {
   Input in;
   in.insert(make_pair("trades", trades));
   in.insert(make_pair("userref", userref));
@@ -540,25 +560,27 @@ std::string kraken_interface::get_closed_orders(const std::string& trades,
   in.insert(make_pair("end", end));
   in.insert(make_pair("ofs", ofs));
   in.insert(make_pair("closetime", closetime));
-  return m_kapi.private_method("ClosedOrders",in);
+  return m_kapi.private_method("ClosedOrders", in);
 }
 
 /*
 //! *** //! Query orders info
 //! //!
 //! - Input:
-//! trades = whether or not to include trades in output (optional.  default = false)
+//! trades = whether or not to include trades in output (optional.  default =
+false)
 //! userref = restrict results to given user reference id (optional)
-//! txid = comma delimited list of transaction ids to query info about (20 maximum)
+//! txid = comma delimited list of transaction ids to query info about (20
+maximum)
 //!
 //! - Result: associative array of orders info
 //! order_txid = order info.  See
 //!
 //!
 */
-std::string kraken_interface::query_orders_info(const std::string& trades,
-                                                const std::string& userref,
-                                                const std::string& txid) {
+std::string kraken_interface::query_orders_info(const std::string &trades,
+                                                const std::string &userref,
+                                                const std::string &txid) {
   Input in;
   in.insert(make_pair("trades", trades));
   in.insert(make_pair("userref", userref));
@@ -576,8 +598,10 @@ std::string kraken_interface::query_orders_info(const std::string& trades,
 //!     closed position = positions that have been closed
 //!     closing position = any trade closing all or part of a position
 //!     no position = non-positional trades
-//! trades = whether or not to include trades related to position in output (optional.  default = false)
-//! start = starting unix timestamp or trade tx id of results (optional.  exclusive)
+//! trades = whether or not to include trades related to position in output
+(optional.  default = false)
+//! start = starting unix timestamp or trade tx id of results (optional.
+exclusive)
 //! end = ending unix timestamp or trade tx id of results (optional.  inclusive)
 //! ofs = result offset
 //!
@@ -597,14 +621,17 @@ std::string kraken_interface::query_orders_info(const std::string& trades,
 //!         closing = trade closes all or part of a position
 //! count = amount of available trades info matching criteria
 //!
-//! - If the trade opened a position, the follow fields are also present in the trade info:
+//! - If the trade opened a position, the follow fields are also present in the
+trade info:
 //!     posstatus = position status (open/closed)
 //!     cprice = average price of closed portion of position (quote currency)
 //!     ccost = total cost of closed portion of position (quote currency)
 //!     cfee = total fee of closed portion of position (quote currency)
 //!     cvol = total fee of closed portion of position (quote currency)
-//!     cmargin = total margin freed in closed portion of position (quote currency)
-//!     net = net profit/loss of closed portion of position (quote currency, quote currency scale)
+//!     cmargin = total margin freed in closed portion of position (quote
+currency)
+//!     net = net profit/loss of closed portion of position (quote currency,
+quote currency scale)
 //!     trades = list of closing trades for position (if available)
 //!
 //! - Note:
@@ -613,7 +640,7 @@ std::string kraken_interface::query_orders_info(const std::string& trades,
 //!
 //!
 */
-std::string kraken_interface::get_trades_history(const Input& in) {
+std::string kraken_interface::get_trades_history(const Input &in) {
   return m_kapi.private_method("TradesHistory", in);
 }
 
@@ -621,15 +648,17 @@ std::string kraken_interface::get_trades_history(const Input& in) {
 //! *** //! Query trades info
 //! //!
 //! - Input:
-//! txid = comma delimited list of transaction ids to query info about (20 maximum)
-//! trades = whether or not to include trades related to position in output (optional.  default = false)
+//! txid = comma delimited list of transaction ids to query info about (20
+maximum)
+//! trades = whether or not to include trades related to position in output
+(optional.  default = false)
 //!
 //! - Result: associative array of trades info
 //! trade_txid = trade info.  See
 //!
 //!
 */
-std::string kraken_interface::query_trades_info(const Input& in) {
+std::string kraken_interface::query_trades_info(const Input &in) {
   return m_kapi.private_method("QueryTrades", in);
 }
 
@@ -638,7 +667,8 @@ std::string kraken_interface::query_trades_info(const Input& in) {
 //! //!
 //! - Input:
 //! txid = comma delimited list of transaction ids to restrict output to
-//! docalcs = whether or not to include profit/loss calculations (optional.  default = false)
+//! docalcs = whether or not to include profit/loss calculations (optional.
+default = false)
 //!
 //! - Result: associative array of open position info
 //! position_txid = open position info
@@ -647,21 +677,26 @@ std::string kraken_interface::query_trades_info(const Input& in) {
 //!     time = unix timestamp of trade
 //!     type = type of order used to open position (buy/sell)
 //!     ordertype = order type used to open position
-//!     cost = opening cost of position (quote currency unless viqc set in oflags)
+//!     cost = opening cost of position (quote currency unless viqc set in
+oflags)
 //!     fee = opening fee of position (quote currency)
 //!     vol = position volume (base currency unless viqc set in oflags)
-//!     vol_closed = position volume closed (base currency unless viqc set in oflags)
+//!     vol_closed = position volume closed (base currency unless viqc set in
+oflags)
 //!     margin = initial margin (quote currency)
-//!     value = current value of remaining position (if docalcs requested.  quote currency)
-//!     net = unrealized profit/loss of remaining position (if docalcs requested.  quote currency, quote currency scale)
+//!     value = current value of remaining position (if docalcs requested.
+quote currency)
+//!     net = unrealized profit/loss of remaining position (if docalcs
+requested.  quote currency, quote currency scale)
 //!     misc = comma delimited list of miscellaneous info
 //!     oflags = comma delimited list of order flags
 //!         viqc = volume in quote currency
 //!
-//! - Note: Unless otherwise stated, costs, fees, prices, and volumes are in the asset pair's scale, not the currency's scale.
+//! - Note: Unless otherwise stated, costs, fees, prices, and volumes are in the
+asset pair's scale, not the currency's scale.
 //!
 */
-std::string kraken_interface::get_open_positions(const Input& in) {
+std::string kraken_interface::get_open_positions(const Input &in) {
   return m_kapi.private_method("OpenPositions", in);
 }
 
@@ -671,14 +706,16 @@ std::string kraken_interface::get_open_positions(const Input& in) {
 //! - Input:
 //! aclass = asset class (optional):
 //!     currency (default)
-//! asset = comma delimited list of assets to restrict output to (optional.  default = all)
+//! asset = comma delimited list of assets to restrict output to (optional.
+default = all)
 //! type = type of ledger to retrieve (optional):
 //!     all (default)
 //!     deposit
 //!     withdrawal
 //!     trade
 //!     margin
-//! start = starting unix timestamp or ledger id of results (optional.  exclusive)
+//! start = starting unix timestamp or ledger id of results (optional.
+exclusive)
 //! end = ending unix timestamp or ledger id of results (optional.  inclusive)
 //! ofs = result offset
 //!
@@ -696,7 +733,7 @@ std::string kraken_interface::get_open_positions(const Input& in) {
 //! - Note: Times given by ledger ids are more accurate than unix timestamps.
 //!
 */
-std::string kraken_interface::get_ledgers_info(const Input& in) {
+std::string kraken_interface::get_ledgers_info(const Input &in) {
   return m_kapi.private_method("Ledgers", in);
 }
 
@@ -711,7 +748,7 @@ std::string kraken_interface::get_ledgers_info(const Input& in) {
 //!
 //!
 */
-std::string kraken_interface::query_ledgers(const Input& in) {
+std::string kraken_interface::query_ledgers(const Input &in) {
   return m_kapi.private_method("QueryLedgers", in);
 }
 
@@ -729,28 +766,37 @@ std::string kraken_interface::query_ledgers(const Input& in) {
 //!     fee = current fee in percent
 //!     minfee = minimum fee for pair (if not fixed fee)
 //!     maxfee = maximum fee for pair (if not fixed fee)
-//!     nextfee = next tier's fee for pair (if not fixed fee.  nil if at lowest fee tier)
-//!     nextvolume = volume level of next tier (if not fixed fee.  nil if at lowest fee tier)
-//!     tiervolume = volume level of current tier (if not fixed fee.  nil if at lowest fee tier)
-//! fees_maker = array of asset pairs and maker fee tier info (if requested) for any pairs on maker/taker schedule
+//!     nextfee = next tier's fee for pair (if not fixed fee.  nil if at lowest
+fee tier)
+//!     nextvolume = volume level of next tier (if not fixed fee.  nil if at
+lowest fee tier)
+//!     tiervolume = volume level of current tier (if not fixed fee.  nil if at
+lowest fee tier)
+//! fees_maker = array of asset pairs and maker fee tier info (if requested) for
+any pairs on maker/taker schedule
 //!     fee = current fee in percent
 //!     minfee = minimum fee for pair (if not fixed fee)
 //!     maxfee = maximum fee for pair (if not fixed fee)
-//!     nextfee = next tier's fee for pair (if not fixed fee.  nil if at lowest fee tier)
-//!     nextvolume = volume level of next tier (if not fixed fee.  nil if at lowest fee tier)
-//!     tiervolume = volume level of current tier (if not fixed fee.  nil if at lowest fee tier)
+//!     nextfee = next tier's fee for pair (if not fixed fee.  nil if at lowest
+fee tier)
+//!     nextvolume = volume level of next tier (if not fixed fee.  nil if at
+lowest fee tier)
+//!     tiervolume = volume level of current tier (if not fixed fee.  nil if at
+lowest fee tier)
 //!
 //! - Note: If an asset pair is on a maker/taker fee schedule, the taker side
 //! is given in "fees" and maker side in "fees_maker". For pairs not on
 //! maker/taker, they will only be given in "fees".
 //!
 */
-std::string kraken_interface::get_trade_volume(const Input& in) {
+std::string kraken_interface::get_trade_volume(const Input &in) {
   return m_kapi.private_method("TradeVolume", in);
 }
 
 /*
-//! //////////////////////////////////////////////////////////////////////////////////////////////////// ** id="private-user-trading" Private user trading
+//!
+////////////////////////////////////////////////////////////////////////////////////////////////////
+** id="private-user-trading" Private user trading
 //! *** //! Add standard order
 //! //!
 //! - Input:
@@ -762,11 +808,15 @@ std::string kraken_interface::get_trade_volume(const Input& in) {
 //!     stop-loss (price = stop loss price)
 //!     take-profit (price = take profit price)
 //!     stop-loss-profit (price = stop loss price, price2 = take profit price)
-//!     stop-loss-profit-limit (price = stop loss price, price2 = take profit price)
-//!     stop-loss-limit (price = stop loss trigger price, price2 = triggered limit price)
-//!     take-profit-limit (price = take profit trigger price, price2 = triggered limit price)
+//!     stop-loss-profit-limit (price = stop loss price, price2 = take profit
+price)
+//!     stop-loss-limit (price = stop loss trigger price, price2 = triggered
+limit price)
+//!     take-profit-limit (price = take profit trigger price, price2 = triggered
+limit price)
 //!     trailing-stop (price = trailing stop offset)
-//!     trailing-stop-limit (price = trailing stop offset, price2 = triggered limit offset)
+//!     trailing-stop-limit (price = trailing stop offset, price2 = triggered
+limit offset)
 //!     stop-loss-and-limit (price = stop loss price, price2 = limit price)
 //!     settle-position
 //! price = price (optional.  dependent upon ordertype)
@@ -809,7 +859,8 @@ std::string kraken_interface::get_trade_volume(const Input& in) {
 //! EOrder:Cannot open opposing position
 //! EOrder:Margin allowance exceeded
 //! EOrder:Margin level too low
-//! EOrder:Insufficient margin (exchange does not have sufficient funds to allow margin trading)
+//! EOrder:Insufficient margin (exchange does not have sufficient funds to allow
+margin trading)
 //! EOrder:Insufficient funds (insufficient user funds)
 //! EOrder:Order minimum not met (volume too low)
 //! EOrder:Orders limit exceeded
@@ -821,9 +872,10 @@ std::string kraken_interface::get_trade_volume(const Input& in) {
 //! - Note:
 //!
 */
-boost::optional<JSONNode> kraken_interface::add_standard_order(const order& order_) {
+boost::optional<JSONNode>
+kraken_interface::add_standard_order(const order &order_) {
 
-  auto const& in =  order_to_kraken_order(order_);
+  auto const &in = order_to_kraken_order(order_);
   boost::optional<JSONNode> root;
   std::string json_data = m_kapi.private_method("AddOrder", in);
 
@@ -831,17 +883,15 @@ boost::optional<JSONNode> kraken_interface::add_standard_order(const order& orde
     root = libjson::parse(json_data);
 
     // Check if there are data
-    const auto& errors = root.get().at("error");
-    if (!errors.empty())
-    {
+    const auto &errors = root.get().at("error");
+    if (!errors.empty()) {
       std::cout << json_data << std::endl;
       return boost::none;
     }
     // if (error == "[\"EService:Unavailable\"]") {
     //}
 
-  }
-  catch (...) {
+  } catch (...) {
   }
 
   return root;
@@ -860,31 +910,31 @@ boost::optional<JSONNode> kraken_interface::add_standard_order(const order& orde
 //! - Note: txid may be a user reference id.
 //!
 */
-boost::optional<JSONNode> kraken_interface::cancel_open_order(const std::string& txid) {
+boost::optional<JSONNode>
+kraken_interface::cancel_open_order(const std::string &txid) {
   Input in;
   boost::optional<JSONNode> root;
   in.insert(make_pair("txid", txid));
-  auto json_data =  m_kapi.private_method("CancelOrder", in);
+  auto json_data = m_kapi.private_method("CancelOrder", in);
   try {
     root = libjson::parse(json_data);
 
     // Check if there are data
-    const auto& errors = root.get().at("error");
+    const auto &errors = root.get().at("error");
     if (!errors.empty()) {
 
-      std::cout << json_data  << std::endl;
+      std::cout << json_data << std::endl;
       return boost::none;
     }
 
-  }
-  catch (...) {
+  } catch (...) {
   }
 
   return root;
-
 }
 
-//! //////////////////////////////////////////////////////////////////////////////////////////////////// ** id="private-user-funding" Private user funding
+//! ////////////////////////////////////////////////////////////////////////////////////////////////////
+//! ** id="private-user-funding" Private user funding
 /*
 //! - This is a tentative funding API and may be updated
 //! in the future. Please refer to the main
@@ -897,13 +947,15 @@ boost::optional<JSONNode> kraken_interface::cancel_open_order(const std::string&
 //!
 //! - Result: associative array of deposit methods:
 //! method = name of deposit method
-//! limit = maximum net amount that can be deposited right now, or false if no limit
+//! limit = maximum net amount that can be deposited right now, or false if no
+limit
 //! fee = amount of fees that will be paid
-//! address-setup-fee = whether or not method has an address setup fee (optional)
+//! address-setup-fee = whether or not method has an address setup fee
+(optional)
 //!
 //!
 */
-std::string kraken_interface::deposit_methods(const Input& in) {
+std::string kraken_interface::deposit_methods(const Input &in) {
   return m_kapi.private_method("DepositMethods", in);
 }
 
@@ -924,7 +976,7 @@ std::string kraken_interface::deposit_methods(const Input& in) {
 //!
 //!
 */
-std::string kraken_interface::deposit_addresses(const Input& in) {
+std::string kraken_interface::deposit_addresses(const Input &in) {
   return m_kapi.private_method("DepositAddresses", in);
 }
 
@@ -955,7 +1007,7 @@ std::string kraken_interface::deposit_addresses(const Input& in) {
 //! For information about the status, please refer to the .
 //!
 */
-std::string kraken_interface::deposit_status(const Input& in) {
+std::string kraken_interface::deposit_status(const Input &in) {
   return m_kapi.private_method("DepositStatus", in);
 }
 
@@ -976,7 +1028,7 @@ std::string kraken_interface::deposit_status(const Input& in) {
 //!
 //!
 */
-std::string kraken_interface::get_withdrawal_info(const Input& in) {
+std::string kraken_interface::get_withdrawal_info(const Input &in) {
   return m_kapi.private_method("WithdrawInfo", in);
 }
 
@@ -995,7 +1047,7 @@ std::string kraken_interface::get_withdrawal_info(const Input& in) {
 //!
 //!
 */
-std::string kraken_interface::withdraw_funds(const Input& in) {
+std::string kraken_interface::withdraw_funds(const Input &in) {
   return m_kapi.private_method("Withdraw", in);
 }
 
@@ -1029,7 +1081,7 @@ std::string kraken_interface::withdraw_funds(const Input& in) {
 //! For information about the status, please refer to the .
 //!
 */
-std::string kraken_interface::withdraw_status(const Input& in) {
+std::string kraken_interface::withdraw_status(const Input &in) {
   return m_kapi.private_method("WithdrawStatus", in);
 }
 
@@ -1049,6 +1101,6 @@ std::string kraken_interface::withdraw_status(const Input& in) {
 //!
 //!
 */
-std::string kraken_interface::withdraw_cancel(const Input& in) {
+std::string kraken_interface::withdraw_cancel(const Input &in) {
   return m_kapi.private_method("WithdrawCancel", in);
 }
