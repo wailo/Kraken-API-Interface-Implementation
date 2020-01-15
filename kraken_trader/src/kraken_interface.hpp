@@ -46,61 +46,61 @@ public:
 
   // Kraken API Calls
 
-  std::string get_server_time();
+  std::string get_server_time() const;
 
   boost::optional<JSONNode>
   get_asset_info(const boost::optional<std::string> &info,
                  const boost::optional<std::string> &aclass,
-                 const boost::optional<std::string> &asset);
+                 const boost::optional<std::string> &asset) const;
 
   boost::optional<JSONNode>
   get_tradable_pairs(const boost::optional<std::string> &info,
-                     const boost::optional<std::string> &pair);
+                     const boost::optional<std::string> &pair) const;
 
-  std::string get_ticker_info(const std::string &pair);
+  std::string get_ticker_info(const std::string &pair) const;
 
-  std::string get_ohlc_data(const Input &in);
+  std::string get_ohlc_data(const Input &in) const;
 
   boost::optional<JSONNode> get_order_book(const std::string &pair,
-                                           const boost::optional<int> &count);
+                                           const boost::optional<int> &count) const;
 
   std::string get_recent_trades(const std::string &pair,
-                                const std::string &since);
+                                const std::string &since) const;
 
-  std::string get_recent_spread_data(const std::string &pair);
+  std::string get_recent_spread_data(const std::string &pair) const;
 
-  std::string get_account_balance(const Input &in);
+  std::string get_account_balance(const Input &in) const;
 
   std::string get_trade_balance(const std::string &aclass,
-                                const std::string &asset);
+                                const std::string &asset) const;
 
   typedef std::vector<std::unordered_map<std::string, std::string>>
       order_data_t;
   boost::optional<order_data_t>
   get_open_orders(const boost::optional<std::string> &trades,
-                  const boost::optional<std::string> &userref);
+                  const boost::optional<std::string> &userref) const;
 
   std::string get_closed_orders(const std::string &trades,
                                 const std::string &userref,
                                 const std::string &start,
                                 const std::string &end, const std::string &ofs,
-                                const std::string &closetime);
+                                const std::string &closetime) const;
 
   std::string query_orders_info(const std::string &trades,
                                 const std::string &userref,
-                                const std::string &txid);
+                                const std::string &txid) const;
 
-  std::string get_trades_history(const Input &in);
+  std::string get_trades_history(const Input &in) const;
 
-  std::string query_trades_info(const Input &in);
+  std::string query_trades_info(const Input &in) const;
 
-  std::string get_open_positions(const Input &in);
+  std::string get_open_positions(const Input &in) const;
 
-  std::string get_ledgers_info(const Input &in);
+  std::string get_ledgers_info(const Input &in) const;
 
-  std::string query_ledgers(const Input &in);
+  std::string query_ledgers(const Input &in) const;
 
-  std::string get_trade_volume(const Input &in);
+  std::string get_trade_volume(const Input &in) const;
 
   boost::optional<JSONNode> add_standard_order(const order &order_);
 
@@ -112,7 +112,7 @@ public:
 
   std::string deposit_status(const Input &in);
 
-  std::string get_withdrawal_info(const Input &in);
+  std::string get_withdrawal_info(const Input &in) const;
 
   std::string withdraw_funds(const Input &in);
 
