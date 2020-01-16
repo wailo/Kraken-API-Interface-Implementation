@@ -8,25 +8,10 @@ class order {
 public:
   friend class kraken_interface;
 
-  //! Default constructor
-  order();
+  //! Default constructor is disabled
+  order() = default;
 
-  //! Copy constructor
-  // order(const order &other);
-
-  //! Move constructor
-  // order(order &&other) noexcept;
-
-  //! Destructor
-  // virtual ~order() noexcept;
-
-  //! Copy assignment operator
-  // order& operator=(const order &other);
-
-  //! Move assignment operator
-  // order& operator=(order &&other) noexcept;
-
-  // private:
+  // order type
   enum class order_type {
     market,
     limit,            // (price = limit price)
@@ -46,49 +31,50 @@ public:
     settle_position,
   };
 
+  // order side
   enum class side_t { buy, sell };
 
-  static const order create_limit_order(const std::string &pair,
-                                        order::side_t buy_sell, double volume,
-                                        double limit_price, int userref,
-                                        bool validate = true);
-
+  // Helper function to create a limit order
+  static order create_limit_order(const std::string &pair,
+                                        const order::side_t buy_sell, const double volume,
+                                        const double limit_price, const int userref,
+                                        const bool validate = true);
 private:
   // asset pair
-  std::string pair;
+  std::string m_pair;
 
   // type of order (buy/sell)
-  side_t side;
+  side_t m_side;
 
   // order type:
-  order_type ordertype;
+  order_type m_ordertype;
 
   //  price (optional.  dependent upon ordertype)
-  double price;
+  double m_price;
 
   // secondary price (optional.  dependent upon ordertype)
-  double price2;
+  double m_price2;
 
   // order volume in lots
-  double volume;
+  double m_volume;
 
   // amount of leverage desired (optional.  default = none);
-  std::string leverage;
+  std::string m_leverage;
 
   // comma delimited list of order flags (optional):
-  std::string oflags;
+  std::string m_oflags;
 
   // scheduled start time (optional):
-  long unsigned int starttm;
+  long unsigned int m_starttm;
 
   // expiration time (optional):
-  long unsigned int expiretm;
+  long unsigned int m_expiretm;
 
   // user reference id.  32_bit signed number.  (optional)
-  std::string userref;
+  std::string m_userref;
 
   // validate inputs only.  do not submit order (optional)
-  bool validate{true};
+  bool m_validate{true};
 };
 
 #endif /* ORDER_H */

@@ -12,7 +12,6 @@ using namespace Kraken;
 int main() {
   curl_global_init(CURL_GLOBAL_ALL);
   view_controller trading_platform;
-
   curl_global_cleanup();
   return 0;
 }

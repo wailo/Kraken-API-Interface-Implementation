@@ -14,22 +14,23 @@
 
 #include "../src/kraken_interface.hpp"
 #include "libjson/libjson.h"
+#include <string>
 
 BOOST_AUTO_TEST_CASE(native_order_to_kraken) {
 
   order order_;
-  order_.pair = "XXBTZEUR";
-  order_.side = order::side_t::sell;
-  order_.ordertype = order::order_type::limit;
-  order_.price  = 100000.0;
-  order_.price2 = 100000.0;
-  order_.volume = 1.0;
-  order_.leverage = "none";
+  order_.m_pair = "XXBTZEUR";
+  order_.m_side = order::side_t::sell;
+  order_.m_ordertype = order::order_type::limit;
+  order_.m_price  = 100000.0;
+  order_.m_price2 = 100000.0;
+  order_.m_volume = 1.0;
+  order_.m_leverage = "none";
   // order_.oflags;
-  order_.starttm =  0;
-  order_.expiretm = 0;
+  order_.m_starttm =  0;
+  order_.m_expiretm = 0;
   // order_.userref;
-  order_.validate = true;
+  order_.m_validate = true;
 
   auto kraken_order =  kraken_interface::order_to_kraken_order(order_);
 
@@ -63,30 +64,30 @@ BOOST_AUTO_TEST_CASE(native_order_from_kraken) {
 
   auto order_ = kraken_interface::from_kraken_order(kraken_order);
 
-  BOOST_CHECK_EQUAL(order_.pair , "XXBTZEUR");
-  BOOST_CHECK_EQUAL(unsigned(order_.side) , unsigned(order::side_t::sell));
-  BOOST_CHECK_EQUAL(unsigned(order_.ordertype) , unsigned(order::order_type::limit));
-  BOOST_CHECK_EQUAL(order_.price  , 100000.0);
-  BOOST_CHECK_EQUAL(order_.price2 , 100000.0);
-  BOOST_CHECK_EQUAL(order_.volume , 1.0);
-  BOOST_CHECK_EQUAL(order_.leverage , "none");
-  // BOOST_CHECK_EQUAL(order_.oflags);
-  BOOST_CHECK_EQUAL(order_.starttm ,  0);
-  BOOST_CHECK_EQUAL(order_.expiretm , 0);
-  // BOOST_CHECK_EQUAL(order_.userref);
-  BOOST_CHECK_EQUAL(order_.validate , true);
+  BOOST_CHECK_EQUAL(order_.m_pair , "XXBTZEUR");
+  BOOST_CHECK_EQUAL(unsigned(order_.m_side) , unsigned(order::side_t::sell));
+  BOOST_CHECK_EQUAL(unsigned(order_.m_ordertype) , unsigned(order::order_type::limit));
+  BOOST_CHECK_EQUAL(order_.m_price  , 100000.0);
+  BOOST_CHECK_EQUAL(order_.m_price2 , 100000.0);
+  BOOST_CHECK_EQUAL(order_.m_volume , 1.0);
+  BOOST_CHECK_EQUAL(order_.m_leverage , "none");
+  // BOOST_CHECK_EQUAL(order_.m_oflags);
+  BOOST_CHECK_EQUAL(order_.m_starttm ,  0);
+  BOOST_CHECK_EQUAL(order_.m_expiretm , 0);
+  // BOOST_CHECK_EQUAL(order_.m_userref);
+  BOOST_CHECK_EQUAL(order_.m_validate , true);
 }
 
 BOOST_AUTO_TEST_CASE(create_limit_order) {
 
   order order_ = order::create_limit_order("XXBTZEUR", order::side_t::sell, 150.0, 05, true);
-  BOOST_CHECK_EQUAL(order_.pair , "XXBTZEUR");
-  BOOST_CHECK_EQUAL(unsigned(order_.side) , unsigned(order::side_t::sell));
-  BOOST_CHECK_EQUAL(unsigned(order_.ordertype) , unsigned(order::order_type::limit));
-  BOOST_CHECK_EQUAL(order_.price  , 5);
-  BOOST_CHECK_EQUAL(order_.volume , 150.0);
-  BOOST_CHECK_EQUAL(order_.leverage , "none");
-  BOOST_CHECK_EQUAL(order_.starttm ,  0);
-  BOOST_CHECK_EQUAL(order_.expiretm , 0);
-  BOOST_CHECK_EQUAL(order_.validate , true);
+  BOOST_CHECK_EQUAL(order_.m_pair , "XXBTZEUR");
+  BOOST_CHECK_EQUAL(unsigned(order_.m_side) , unsigned(order::side_t::sell));
+  BOOST_CHECK_EQUAL(unsigned(order_.m_ordertype) , unsigned(order::order_type::limit));
+  BOOST_CHECK_EQUAL(order_.m_price  , 5);
+  BOOST_CHECK_EQUAL(order_.m_volume , 150.0);
+  BOOST_CHECK_EQUAL(order_.m_leverage , "none");
+  BOOST_CHECK_EQUAL(order_.m_starttm ,  0);
+  BOOST_CHECK_EQUAL(order_.m_expiretm , 0);
+  BOOST_CHECK_EQUAL(order_.m_validate , true);
 }

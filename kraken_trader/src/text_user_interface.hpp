@@ -2,6 +2,7 @@
 #define TEXT_USER_INTERFACE_H
 
 #include <vector>
+#include <string>
 
 class text_user_interface {
 public:

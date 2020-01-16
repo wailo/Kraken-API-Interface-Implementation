@@ -2,7 +2,6 @@
 #include <array>
 #include <form.h>
 #include <ncurses.h>
-#include <string>
 
 using fields_t = std::array<fieldnode *, 4>;
 
