@@ -52,34 +52,34 @@ include_directories (${Boost_INCLUDE_DIRS})
 # file(GLOB TEST_SRCS RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} test/*.cpp)
 
 SET (TEST_SRCS test/order_test.cpp
-               test/api_test.cpp)
+  test/api_test.cpp)
 
-#Run through each source
-foreach(testSrc ${TEST_SRCS})
-  #Extract the filename without an extension (NAME_WE)
-  get_filename_component(testName ${testSrc} NAME_WE)
+# Run through each source
+foreach(testsrc ${TEST_SRCS})
+  #extract the filename without an extension (name_we)
 
-  #Add compile target
-  add_executable(${testName} ${testSrc} src/order.cpp src/kraken_interface.cpp)
+  get_filename_component(testname ${testsrc} NAME_WE)
 
-  #link to Boost libraries AND your targets and dependencies
-  target_link_libraries(${testName} ${Boost_LIBRARIES} ${LIBS} kapi)
+  #add compile target
+  add_executable(${testname} ${testsrc} src/order.cpp src/kraken_interface.cpp)
 
-  #I like to move testing binaries into a testBin directory
-  set_target_properties(${testName} PROPERTIES
-    RUNTIME_OUTPUT_DIRECTORY  ${CMAKE_CURRENT_SOURCE_DIR}/testBin)
+  #link to boost libraries and your targets and dependencies
+  target_link_libraries(${testname} PRIVATE ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY} ${libs} kapi)
 
-  #Finally add it to test execution -
-  #Notice the WORKING_DIRECTORY and COMMAND
-  
-  add_test(NAME ${testName}
-    COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/testBin/${testName} )
+  #i like to move testing binaries into a testbin directory
+  set_target_properties(${testname} PROPERTIES
+    RUNTIME_OUTPUT_DIRECTORY  ${CMAKE_CURRENT_SOURCE_DIR}/testbin)
+
+  #finally add it to test execution -
+  #notice the working_directory and command
+  add_test(NAME ${testname}
+    COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/testbin/${testname} )
 
    # add_custom_command(
-   #   TARGET ${testName}
-   #   COMMENT "Run tests"
-   #   POST_BUILD 
-   #   #WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/testBin
-   #   COMMAND ${CMAKE_CTEST_COMMAND}  --output-on-failure
+   #   target ${testname}
+   #   comment "run tests"
+   #   post_build 
+   #   #working_directory ${CMAKE_CURRENT_SOURCE_DIR}/testbin
+   #   command ${CMAKE_CTEST_COMMAND}  --output-on-failure
    #   )
-endforeach(testSrc)
+endforeach(testsrc)

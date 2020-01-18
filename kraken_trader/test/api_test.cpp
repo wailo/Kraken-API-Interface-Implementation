@@ -6,15 +6,13 @@
 //Define our Module name (prints at testing)
 #define BOOST_TEST_MODULE "BaseClassModule"
 
+#include "libjson/libjson.h"
+#include <boost/test/unit_test.hpp>
+
 #define private public
 #define protected public
 
-
-#include <boost/test/unit_test.hpp>
-
 #include "../src/kraken_interface.hpp"
-#include "libjson/libjson.h"
-#include <iostream>
 
 
 BOOST_AUTO_TEST_CASE(get_order_book) {
