@@ -1,6 +1,8 @@
 #include "view_controller.hpp"
 
-view_controller::view_controller() {
+view_controller::view_controller(const std::string &key,
+                                 const std::string &secret)
+    : m_trader(key, secret) {
 
   m_text_user_interface.set_orders({"order 1", "order 2"});
   // m_text_user_interface.setup_windows(0.5, 1.0, 0.0, 0.0);

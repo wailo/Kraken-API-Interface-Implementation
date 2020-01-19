@@ -3,10 +3,8 @@
 #include <iostream>
 #include <string>
 
-kraken_interface::kraken_interface()
-    : m_kapi("ap17PlvHnPKnshgUp6BLN0ugzoacA3W12W2lphhp2zHoAFhMuKfcDihz",
-             "npeixUc5WShaqIsqV9Kk2dgnQs3zBFMjCg45hK8MS93W4o/"
-             "E2tcjOviFwn+zvLT6ty+plFEusbPlNQrqKmh82w==") {}
+kraken_interface::kraken_interface(const std::string& key, const std::string& secret)
+     : m_kapi(key, secret) {}
 
 std::string kraken_interface::order_side_to_string(order::side_t side) {
   if (side == order::side_t::buy) {

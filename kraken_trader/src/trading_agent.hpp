@@ -8,8 +8,8 @@ class trading_agent {
 public:
   using orders_storage_t = kraken_interface::order_data_t;
 
-  //! Default constructor
-  trading_agent();
+  //! Constructor
+  trading_agent(const std::string &key, const std::string &secret);
 
   //! Copy constructor
   trading_agent(const trading_agent &other) = default;

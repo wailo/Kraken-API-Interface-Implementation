@@ -7,4 +7,4 @@ fi
 docker run -it --rm \
        -v $(pwd):$(pwd) \
        -u $(id -u ${USER}):$(id -g ${USER}) \
-       $DOCKER_IMAGE sh -c "mkdir -p $(pwd)/build && cd $(pwd)/build && CC=gcc CXX=g++ cmake -G \"Ninja\" .. && cmake --build . && ctest --verbose"
+       $DOCKER_IMAGE sh -c "mkdir -p $(pwd)/build && cd $(pwd)/build && CC=gcc CXX=g++ cmake -G \"Ninja\" .. && cmake --build ."

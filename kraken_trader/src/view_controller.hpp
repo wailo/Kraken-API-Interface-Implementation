@@ -7,7 +7,7 @@
 class view_controller {
 public:
   //! Default constructor
-  view_controller();
+  view_controller(const std::string &key, const std::string &secret);
 
 private:
   trading_agent m_trader;

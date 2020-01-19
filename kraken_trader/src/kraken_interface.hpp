@@ -12,7 +12,7 @@ public:
   using Input = Kraken::KInput;
 
   //! Default constructor
-  kraken_interface();
+  kraken_interface(const std::string &key, const std::string &secret);
 
   //! Copy constructor
   kraken_interface(const kraken_interface &other) = delete;

@@ -39,8 +39,7 @@ find_package(Curses REQUIRED)
 FILE(GLOB SRCFILES src/*.cpp)
 add_executable (${PROJECT_NAME} ${SRCFILES})
 set_target_properties (${PROJECT_NAME} PROPERTIES 
-  COMPILE_DEFINITIONS_DEBUG "JSON_DEBUG;JSON_SAFE;JSON_ISO_STRICT"
-  RUNTIME_OUTPUT_DIRECTORY  ${CMAKE_CURRENT_SOURCE_DIR}/bin)
+  COMPILE_DEFINITIONS_DEBUG "JSON_DEBUG;JSON_SAFE;JSON_ISO_STRICT")
 target_link_libraries (${PROJECT_NAME} ${LIBS} kapi ${CURSES_LIBRARIES})
 
 
@@ -65,10 +64,6 @@ foreach(testsrc ${TEST_SRCS})
 
   #link to boost libraries and your targets and dependencies
   target_link_libraries(${testname} PRIVATE ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY} ${libs} kapi)
-
-  #i like to move testing binaries into a testbin directory
-  set_target_properties(${testname} PROPERTIES
-    RUNTIME_OUTPUT_DIRECTORY  ${CMAKE_CURRENT_SOURCE_DIR}/testbin)
 
   #finally add it to test execution -
   #notice the working_directory and command

@@ -14,9 +14,12 @@
 
 #include "../src/kraken_interface.hpp"
 
+const auto key = "key";
+const auto secret = "secret";
+
 BOOST_AUTO_TEST_CASE(get_order_book) {
 
-  kraken_interface api_intfc;
+  kraken_interface api_intfc(key, secret);
   const auto root = api_intfc.get_order_book("XXBTZEUR", 5);
 
   BOOST_REQUIRE_EQUAL(root == boost::none, false);
@@ -46,7 +49,8 @@ BOOST_AUTO_TEST_CASE(get_order_book) {
 
 BOOST_AUTO_TEST_CASE(get_asset_info) {
 
-  kraken_interface api_intfc;
+  kraken_interface api_intfc(key, secret);
+  ;
   auto const &root = api_intfc.get_asset_info(boost::optional<std::string>(),
                                               boost::optional<std::string>(),
                                               boost::optional<std::string>());
@@ -62,7 +66,8 @@ BOOST_AUTO_TEST_CASE(get_asset_info) {
 
 BOOST_AUTO_TEST_CASE(get_tradable_pairs) {
 
-  kraken_interface api_intfc;
+  kraken_interface api_intfc(key, secret);
+  ;
   auto root = api_intfc.get_tradable_pairs(boost::optional<std::string>(),
                                            boost::optional<std::string>());
 
@@ -76,7 +81,8 @@ BOOST_AUTO_TEST_CASE(get_tradable_pairs) {
 
 BOOST_AUTO_TEST_CASE(get_open_orders) {
 
-  kraken_interface api_intfc;
+  kraken_interface api_intfc(key, secret);
+  ;
   auto result = api_intfc.get_open_orders(boost::optional<std::string>(),
                                           boost::optional<std::string>());
 
@@ -95,7 +101,8 @@ BOOST_AUTO_TEST_CASE(add_standard_order) {
   int userref = 0;
   order order_ = order::create_limit_order("BCHEUR", order::side_t::sell,
                                            volume, 11150, userref);
-  kraken_interface api_intfc;
+  kraken_interface api_intfc(key, secret);
+  ;
   int tries = 3;
   boost::optional<JSONNode> root;
 
@@ -117,7 +124,8 @@ BOOST_AUTO_TEST_CASE(retry) {
     return boost::optional<JSONNode>();
   };
 
-  kraken_interface api_intfc;
+  kraken_interface api_intfc(key, secret);
+  ;
 
   auto res = api_intfc.send_api_request(3, fn);
   BOOST_CHECK_EQUAL(!res, true);

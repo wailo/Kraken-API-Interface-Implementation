@@ -1,6 +1,8 @@
 #include "trading_agent.hpp"
+#include "kraken_interface.hpp"
 
-trading_agent::trading_agent() {}
+trading_agent::trading_agent(const std::string &key, const std::string &secret)
+    : m_api_intfc(key, secret) {}
 
 int trading_agent::cancel_order(const std::string &order_id) {
   auto fn_cancel_orders = [&]() {
