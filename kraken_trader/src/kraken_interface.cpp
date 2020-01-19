@@ -3,8 +3,9 @@
 #include <iostream>
 #include <string>
 
-kraken_interface::kraken_interface(const std::string& key, const std::string& secret)
-     : m_kapi(key, secret) {}
+kraken_interface::kraken_interface(const std::string &key,
+                                   const std::string &secret)
+    : m_kapi(key, secret) {}
 
 std::string kraken_interface::order_side_to_string(order::side_t side) {
   if (side == order::side_t::buy) {
@@ -58,27 +59,24 @@ const std::unordered_map<std::string, const order::order_type>
 
 kraken_interface::Input
 kraken_interface::order_to_kraken_order(const order &order_) {
-  Input data;
-  data["pair"] = order_.m_pair;
-  data["type"] = order_side_to_string(order_.m_side);
-  data["ordertype"] = order_types_to_string.at(order_.m_ordertype);
-  data["price"] = std::to_string(order_.m_price);
-  data["price2"] = std::to_string(order_.m_price2);
-  data["volume"] = std::to_string(order_.m_volume);
-  data["leverage"] = order_.m_leverage;
+  Input data = {{"pair", order_.m_pair},
+                {"type", order_side_to_string(order_.m_side)},
+                {"ordertype", order_types_to_string.at(order_.m_ordertype)},
+                {"price", std::to_string(order_.m_price)},
+                {"price2", std::to_string(order_.m_price2)},
+                {"volume", std::to_string(order_.m_volume)},
+                {"leverage", order_.m_leverage},
+                {"starttm", std::to_string(order_.m_starttm)},
+                {"expiretm", std::to_string(order_.m_expiretm)},
+                {"userref", order_.m_userref}};
 
   if (!order_.m_oflags.empty()) {
     data["oflags"] = order_.m_oflags;
   }
 
-  data["starttm"] = std::to_string(order_.m_starttm);
-  data["expiretm"] = std::to_string(order_.m_expiretm);
-  data["userref"] = order_.m_userref;
-
   if (order_.m_validate) {
     data["validate"] = "true";
   }
-
   return data;
 }
 
