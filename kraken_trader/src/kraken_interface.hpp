@@ -61,8 +61,9 @@ public:
 
   std::string get_ohlc_data(const Input &in) const;
 
-  boost::optional<JSONNode> get_order_book(const std::string &pair,
-                                           const boost::optional<int> &count) const;
+  boost::optional<JSONNode>
+  get_order_book(const std::string &pair,
+                 const boost::optional<int> &count) const;
 
   std::string get_recent_trades(const std::string &pair,
                                 const std::string &since) const;

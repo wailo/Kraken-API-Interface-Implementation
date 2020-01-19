@@ -1,8 +1,7 @@
 #include "order.hpp"
 
-order order::create_limit_order(const std::string &pair,
-                                order::side_t buy_sell, double volume,
-                                double limit_price, int userref,
+order order::create_limit_order(const std::string &pair, order::side_t buy_sell,
+                                double volume, double limit_price, int userref,
                                 bool validate) {
   order order_;
   order_.m_pair = pair;

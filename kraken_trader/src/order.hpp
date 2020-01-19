@@ -36,9 +36,11 @@ public:
 
   // Helper function to create a limit order
   static order create_limit_order(const std::string &pair,
-                                        const order::side_t buy_sell, const double volume,
-                                        const double limit_price, const int userref,
-                                        const bool validate = true);
+                                  const order::side_t buy_sell,
+                                  const double volume, const double limit_price,
+                                  const int userref,
+                                  const bool validate = true);
+
 private:
   // asset pair
   std::string m_pair;

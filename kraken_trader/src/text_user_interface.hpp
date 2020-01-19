@@ -1,8 +1,8 @@
 #ifndef TEXT_USER_INTERFACE_H
 #define TEXT_USER_INTERFACE_H
 
-#include <vector>
 #include <string>
+#include <vector>
 
 class text_user_interface {
 public:

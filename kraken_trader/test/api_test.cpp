@@ -1,9 +1,9 @@
 #define BOOST_TEST_MAIN
-#if !defined( WIN32 )
+#if !defined(WIN32)
 #define BOOST_TEST_DYN_LINK
 #endif
 
-//Define our Module name (prints at testing)
+// Define our Module name (prints at testing)
 #define BOOST_TEST_MODULE "BaseClassModule"
 
 #include "libjson/libjson.h"
@@ -13,7 +13,6 @@
 #define protected public
 
 #include "../src/kraken_interface.hpp"
-
 
 BOOST_AUTO_TEST_CASE(get_order_book) {
 
@@ -43,15 +42,14 @@ BOOST_AUTO_TEST_CASE(get_order_book) {
 
   // output.swap(v);
   // return libjson::to_std_string( result.at("last").as_string() );
-
 }
 
 BOOST_AUTO_TEST_CASE(get_asset_info) {
 
   kraken_interface api_intfc;
-  auto const& root = api_intfc.get_asset_info(boost::optional<std::string>(),
-                                           boost::optional<std::string>(),
-                                           boost::optional<std::string>());
+  auto const &root = api_intfc.get_asset_info(boost::optional<std::string>(),
+                                              boost::optional<std::string>(),
+                                              boost::optional<std::string>());
 
   BOOST_REQUIRE_EQUAL(root == boost::none, false);
 
@@ -60,7 +58,6 @@ BOOST_AUTO_TEST_CASE(get_asset_info) {
 
   // Check if there are data
   BOOST_CHECK_EQUAL(!root.get().at("result").empty(), true);
-
 }
 
 BOOST_AUTO_TEST_CASE(get_tradable_pairs) {
@@ -77,58 +74,54 @@ BOOST_AUTO_TEST_CASE(get_tradable_pairs) {
   BOOST_CHECK_EQUAL(!root.get().at("result").empty(), true);
 }
 
-
 BOOST_AUTO_TEST_CASE(get_open_orders) {
 
   kraken_interface api_intfc;
-  auto result  = api_intfc.get_open_orders(boost::optional<std::string>(),
-                                           boost::optional<std::string>());
+  auto result = api_intfc.get_open_orders(boost::optional<std::string>(),
+                                          boost::optional<std::string>());
 
   BOOST_REQUIRE_EQUAL(result == boost::none, false);
 
-  for (auto const& row : result.get() ) {
-    for (auto const& val : row) {
-      std::cout<< val.first << " -- " << val.second << std::endl;
+  for (auto const &row : result.get()) {
+    for (auto const &val : row) {
+      std::cout << val.first << " -- " << val.second << std::endl;
     }
-
   }
-
 }
 
 BOOST_AUTO_TEST_CASE(add_standard_order) {
 
   int volume = 1;
   int userref = 0;
-  order order_ = order::create_limit_order("BCHEUR",
-                                           order::side_t::sell,
-                                           volume,
-                                           11150,
-                                           userref);
+  order order_ = order::create_limit_order("BCHEUR", order::side_t::sell,
+                                           volume, 11150, userref);
   kraken_interface api_intfc;
   int tries = 3;
   boost::optional<JSONNode> root;
 
-  auto fn = [&]() ->boost::optional<JSONNode> { return api_intfc.add_standard_order(order_); };
+  auto fn = [&]() -> boost::optional<JSONNode> {
+    return api_intfc.add_standard_order(order_);
+  };
   root = api_intfc.send_api_request(3, fn);
 
   BOOST_REQUIRE_EQUAL(root == boost::none, false);
-  //std::cout << root.get().at("error").as_string() << std::endl;
+  // std::cout << root.get().at("error").as_string() << std::endl;
   // std::cout << root.get().at("result").as_string() << std::endl;
   BOOST_CHECK_EQUAL(!root.get().at("result").empty(), true);
 }
 
-
 BOOST_AUTO_TEST_CASE(retry) {
 
-  auto fn = [](){ std::cout << "test" << std::endl;
-                  return boost::optional<JSONNode>();};
+  auto fn = []() {
+    std::cout << "test" << std::endl;
+    return boost::optional<JSONNode>();
+  };
 
   kraken_interface api_intfc;
 
   auto res = api_intfc.send_api_request(3, fn);
   BOOST_CHECK_EQUAL(!res, true);
 }
-
 
 // BOOST_AUTO_TEST_CASE(get_current_balance) {
 //   BOOST_CHECK_EQUAL(false , true);

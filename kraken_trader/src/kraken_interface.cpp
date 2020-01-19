@@ -140,10 +140,10 @@ all for given asset class)
 //!
 //!
 */
-boost::optional<JSONNode>
-kraken_interface::get_asset_info(const boost::optional<std::string> &info,
-                                 const boost::optional<std::string> &aclass,
-                                 const boost::optional<std::string> &asset) const {
+boost::optional<JSONNode> kraken_interface::get_asset_info(
+    const boost::optional<std::string> &info,
+    const boost::optional<std::string> &aclass,
+    const boost::optional<std::string> &asset) const {
   Input in;
   if (info) {
     in["info"] = info.get();
@@ -205,9 +205,9 @@ default = all)
 //! maker/taker, they will only be given in "fees".
 //!
 */
-boost::optional<JSONNode>
-kraken_interface::get_tradable_pairs(const boost::optional<std::string> &info,
-                                     const boost::optional<std::string> &pair) const {
+boost::optional<JSONNode> kraken_interface::get_tradable_pairs(
+    const boost::optional<std::string> &info,
+    const boost::optional<std::string> &pair) const {
   Input in;
   if (info) {
     in["info"] = info.get();
@@ -332,8 +332,9 @@ miscellaneous)
 //! last = id to be used as since when polling for new trade data
 //!
 */
-std::string kraken_interface::get_recent_trades(const std::string &pair,
-                                                const std::string &since) const{
+std::string
+kraken_interface::get_recent_trades(const std::string &pair,
+                                    const std::string &since) const {
   Input in;
   in.insert(make_pair("pair", pair));
   in.insert(make_pair("since", since));
@@ -357,7 +358,8 @@ time as the previous set should overwrite all of the previous set's entries at
 that time
 //!
 */
-std::string kraken_interface::get_recent_spread_data(const std::string &pair) const {
+std::string
+kraken_interface::get_recent_spread_data(const std::string &pair) const {
   Input in;
   in.insert(make_pair("pair", pair));
   return m_kapi.public_method("Spread", in);
@@ -400,8 +402,9 @@ new positions)
 bid and ask prices
 //!
 */
-std::string kraken_interface::get_trade_balance(const std::string &aclass,
-                                                const std::string &asset) const{
+std::string
+kraken_interface::get_trade_balance(const std::string &aclass,
+                                    const std::string &asset) const {
   Input in;
   in.insert(make_pair("aclass", aclass));
   in.insert(make_pair("asset", asset));
@@ -467,8 +470,9 @@ has a scale of 8.
 //!
 */
 boost::optional<kraken_interface::order_data_t>
-kraken_interface::get_open_orders(const boost::optional<std::string> &trades,
-                                  const boost::optional<std::string> &userref) const {
+kraken_interface::get_open_orders(
+    const boost::optional<std::string> &trades,
+    const boost::optional<std::string> &userref) const {
   Input in;
   if (trades) {
     in.insert(make_pair("trades", trades.get()));
@@ -548,12 +552,10 @@ exclusive)
 If an order tx id is given for the time, the order's open time is used
 //!
 */
-std::string kraken_interface::get_closed_orders(const std::string &trades,
-                                                const std::string &userref,
-                                                const std::string &start,
-                                                const std::string &end,
-                                                const std::string &ofs,
-                                                const std::string &closetime) const {
+std::string kraken_interface::get_closed_orders(
+    const std::string &trades, const std::string &userref,
+    const std::string &start, const std::string &end, const std::string &ofs,
+    const std::string &closetime) const {
   Input in;
   in.insert(make_pair("trades", trades));
   in.insert(make_pair("userref", userref));
