@@ -161,8 +161,7 @@ boost::optional<JSONNode> kraken_interface::get_tradable_pairs(
 }
 
 std::string kraken_interface::get_ticker_info(const std::string &pair) const {
-  Input in;
-  in.insert(make_pair("pair", pair));
+  const Input in{{"pair", pair}};
   return m_kapi.public_method("Ticker", in);
 }
 
@@ -173,8 +172,7 @@ std::string kraken_interface::get_ohlc_data(const Input &in) const {
 boost::optional<JSONNode>
 kraken_interface::get_order_book(const std::string &pair,
                                  const boost::optional<int> &count) const {
-  Input in;
-  in.insert(make_pair("pair", pair));
+  Input in{{"pair", pair}};
 
   if (count) {
     in.insert(make_pair("count", std::to_string(count.get())));
@@ -194,16 +192,13 @@ kraken_interface::get_order_book(const std::string &pair,
 std::string
 kraken_interface::get_recent_trades(const std::string &pair,
                                     const std::string &since) const {
-  Input in;
-  in.insert(make_pair("pair", pair));
-  in.insert(make_pair("since", since));
+  const Input in{{"pair", pair}, {"since", since}};
   return m_kapi.public_method("Trades", in);
 }
 
 std::string
 kraken_interface::get_recent_spread_data(const std::string &pair) const {
-  Input in;
-  in.insert(make_pair("pair", pair));
+  const Input in{{"pair", pair}};
   return m_kapi.public_method("Spread", in);
 }
 
@@ -214,9 +209,7 @@ std::string kraken_interface::get_account_balance(const Input &in) const {
 std::string
 kraken_interface::get_trade_balance(const std::string &aclass,
                                     const std::string &asset) const {
-  Input in;
-  in.insert(make_pair("aclass", aclass));
-  in.insert(make_pair("asset", asset));
+  const Input in = {{"aclass", aclass}, {"asset", asset}};
   return m_kapi.private_method("TradeBalance", in);
 }
 
@@ -238,43 +231,40 @@ kraken_interface::get_open_orders(
 
   try {
     root = libjson::parse(json_data);
-    auto const &result = root.at("result");
-    // Check for errors.
-    if (!root.at("error").empty() || result.empty()) {
-      return boost::none;
-    }
-
-    auto const &open_orders_data = result.at("open");
-    order_data_t open_orders = {};
-
-    for (JSONNode::const_iterator order = open_orders_data.begin();
-         order != open_orders_data.end(); order++) {
-      std::unordered_map<std::string, std::string> order_row;
-      order_row["id"] = order->name();
-      order_row["refid"] = order->at("refid").as_string();
-      order_row["userref"] = order->at("userref").as_string();
-      order_row["status"] = order->at("status").as_string();
-      order_row["opentm"] = order->at("opentm").as_string();
-      order_row["starttm"] = order->at("starttm").as_string();
-      order_row["expiretm"] = order->at("expiretm").as_string();
-
-      order_row["pair"] = order->at("descr").at("pair").as_string();
-      order_row["type"] = order->at("descr").at("type").as_string();
-      order_row["ordertype"] = order->at("descr").at("ordertype").as_string();
-      order_row["price"] = order->at("descr").at("price").as_string();
-      order_row["price2"] = order->at("descr").at("price2").as_string();
-      order_row["leverage"] = order->at("descr").at("leverage").as_string();
-      order_row["order"] = order->at("descr").at("order").as_string();
-
-      open_orders.push_back(order_row);
-    }
-
-    return open_orders;
-
   } catch (...) {
+    std::cerr << "Failed to parse json data: " << json_data << '\n';
+    return boost::none;
   }
 
-  return boost::none;
+  auto const &result = root.at("result");
+  // Check for errors.
+  if (!root.at("error").empty() || result.empty()) {
+    return boost::none;
+  }
+
+  auto const &open_orders_data = result.at("open");
+  order_data_t open_orders = {};
+
+  for (JSONNode::const_iterator order = open_orders_data.begin();
+       order != open_orders_data.end(); order++) {
+    open_orders.emplace_back(order_data_t::value_type(
+        {{"id", order->name()},
+         {"refid", order->at("refid").as_string()},
+         {"userref", order->at("userref").as_string()},
+         {"status", order->at("status").as_string()},
+         {"opentm", order->at("opentm").as_string()},
+         {"starttm", order->at("starttm").as_string()},
+         {"expiretm", order->at("expiretm").as_string()},
+         {"pair", order->at("descr").at("pair").as_string()},
+         {"type", order->at("descr").at("type").as_string()},
+         {"ordertype", order->at("descr").at("ordertype").as_string()},
+         {"price", order->at("descr").at("price").as_string()},
+         {"price2", order->at("descr").at("price2").as_string()},
+         {"leverage", order->at("descr").at("leverage").as_string()},
+         {"order", order->at("descr").at("order").as_string()}}));
+  }
+
+  return open_orders;
 }
 
 std::string kraken_interface::get_closed_orders(
@@ -294,10 +284,7 @@ std::string kraken_interface::get_closed_orders(
 std::string kraken_interface::query_orders_info(const std::string &trades,
                                                 const std::string &userref,
                                                 const std::string &txid) const {
-  Input in;
-  in.insert(make_pair("trades", trades));
-  in.insert(make_pair("userref", userref));
-  in.insert(make_pair("txid", txid));
+  const Input in{{"trades", trades}, {"userref", userref}, {"txid", txid}};
   return m_kapi.private_method("QueryOrders", in);
 }
 
@@ -338,13 +325,15 @@ kraken_interface::add_standard_order(const order &order_) {
     // Check if there are data
     const auto &errors = root.get().at("error");
     if (!errors.empty()) {
-      std::cout << json_data << std::endl;
+      std::cerr << "Error in json data: " << json_data << '\n';
       return boost::none;
     }
     // if (error == "[\"EService:Unavailable\"]") {
     //}
 
   } catch (...) {
+    std::cerr << "Failed to parse json data: " << json_data << '\n';
+    return boost::none;
   }
 
   return root;
@@ -352,22 +341,22 @@ kraken_interface::add_standard_order(const order &order_) {
 
 boost::optional<JSONNode>
 kraken_interface::cancel_open_order(const std::string &txid) {
-  Input in;
+  const Input in{{"txid", txid}};
+  const auto json_data = m_kapi.private_method("CancelOrder", in);
   boost::optional<JSONNode> root;
-  in.insert(make_pair("txid", txid));
-  auto json_data = m_kapi.private_method("CancelOrder", in);
   try {
     root = libjson::parse(json_data);
 
     // Check if there are data
     const auto &errors = root.get().at("error");
     if (!errors.empty()) {
-
-      std::cout << json_data << std::endl;
+      std::cerr << "Error in json data: " << json_data << '\n';
       return boost::none;
     }
 
   } catch (...) {
+    std::cerr << "Failed to parse json data: " << json_data << '\n';
+    return boost::none;
   }
 
   return root;
