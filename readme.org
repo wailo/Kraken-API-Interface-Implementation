@@ -1,0 +1,7 @@
+* Kraken API Interface
+
+- This is an implementation examaple of kraken C++ API interface. The code is compile inside a docker contaier.
+- Depedency lib (libjson) has been modified to be compatilbe with C++17
+* Compiling the project
+
+- Run the ~build.sh~ script wich will build the docker image and compile the project.
