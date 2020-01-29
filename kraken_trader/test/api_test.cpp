@@ -14,12 +14,23 @@
 
 #include "../src/kraken_interface.hpp"
 
-const auto key = "key";
-const auto secret = "secret";
+struct F {
+  F() {
+    BOOST_TEST_MESSAGE("setup fixture");
+    BOOST_REQUIRE_MESSAGE(!api_key.empty(),
+                          "api_key is required for authentication");
+    BOOST_REQUIRE_MESSAGE(api_secret.empty(),
+                          "sercet is required for authentication");
+  }
+  ~F() { BOOST_TEST_MESSAGE("teardown fixture"); }
 
-BOOST_AUTO_TEST_CASE(get_order_book) {
+  std::string api_key;
+  std::string api_secret;
+};
 
-  kraken_interface api_intfc(key, secret);
+BOOST_FIXTURE_TEST_CASE(get_order_book, F) {
+
+  kraken_interface api_intfc(api_key, api_secret);
   const auto root = api_intfc.get_order_book("XXBTZEUR", 5);
 
   BOOST_REQUIRE_EQUAL(root == std::nullopt, false);
@@ -47,9 +58,9 @@ BOOST_AUTO_TEST_CASE(get_order_book) {
   // return libjson::to_std_string( result.at("last").as_string() );
 }
 
-BOOST_AUTO_TEST_CASE(get_asset_info) {
+BOOST_FIXTURE_TEST_CASE(get_asset_info, F) {
 
-  kraken_interface api_intfc(key, secret);
+  kraken_interface api_intfc(api_key, api_secret);
   ;
   auto const &root = api_intfc.get_asset_info(std::optional<std::string>(),
                                               std::optional<std::string>(),
@@ -64,9 +75,9 @@ BOOST_AUTO_TEST_CASE(get_asset_info) {
   BOOST_CHECK_EQUAL(!root.value().at("result").empty(), true);
 }
 
-BOOST_AUTO_TEST_CASE(get_tradable_pairs) {
+BOOST_FIXTURE_TEST_CASE(get_tradable_pairs, F) {
 
-  kraken_interface api_intfc(key, secret);
+  kraken_interface api_intfc(api_key, api_secret);
   ;
   auto root = api_intfc.get_tradable_pairs(std::optional<std::string>(),
                                            std::optional<std::string>());
@@ -79,10 +90,10 @@ BOOST_AUTO_TEST_CASE(get_tradable_pairs) {
   BOOST_CHECK_EQUAL(!root.value().at("result").empty(), true);
 }
 
-BOOST_AUTO_TEST_CASE(get_open_orders) {
+BOOST_FIXTURE_TEST_CASE(get_open_orders, F) {
 
-  kraken_interface api_intfc(key, secret);
-  ;
+  kraken_interface api_intfc(api_key, api_secret);
+
   auto result = api_intfc.get_open_orders(std::optional<std::string>(),
                                           std::optional<std::string>());
 
@@ -95,13 +106,13 @@ BOOST_AUTO_TEST_CASE(get_open_orders) {
   }
 }
 
-BOOST_AUTO_TEST_CASE(add_standard_order) {
+BOOST_FIXTURE_TEST_CASE(add_standard_order, F) {
 
   int volume = 1;
   int userref = 0;
   order order_ = order::create_limit_order("BCHEUR", order::side_t::sell,
                                            volume, 11150, userref);
-  kraken_interface api_intfc(key, secret);
+  kraken_interface api_intfc(api_key, api_secret);
   ;
   int tries = 3;
   std::optional<JSONNode> root;
@@ -117,24 +128,24 @@ BOOST_AUTO_TEST_CASE(add_standard_order) {
   BOOST_CHECK_EQUAL(!root.value().at("result").empty(), true);
 }
 
-BOOST_AUTO_TEST_CASE(retry) {
+BOOST_FIXTURE_TEST_CASE(retry, F) {
 
   auto fn = []() {
     std::cout << "test" << std::endl;
     return std::optional<JSONNode>();
   };
 
-  kraken_interface api_intfc(key, secret);
+  kraken_interface api_intfc(api_key, api_secret);
   ;
 
   auto res = api_intfc.send_api_request(3, fn);
   BOOST_CHECK_EQUAL(!res, true);
 }
 
-// BOOST_AUTO_TEST_CASE(get_current_balance) {
+// BOOST_FIXTURE_TEST_CASE(get_current_balance, F) {
 //   BOOST_CHECK_EQUAL(false , true);
 // }
 
-// BOOST_AUTO_TEST_CASE(send_order_to_the_market) {
+// BOOST_FIXTURE_TEST_CASE(send_order_to_the_market, F) {
 //   BOOST_CHECK_EQUAL(false , true);
 // }

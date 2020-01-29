@@ -1,7 +1,6 @@
 cmake_minimum_required (VERSION 2.6)
 project (KRAKEN_TRADER)
 
-
 #-------------------------------------------------------------------------------
 IF (CMAKE_CXX_COMPILER_ID STREQUAL Clang)
 	add_definitions("-Wno-tautological-compare" -stdlib=libc++)
@@ -45,16 +44,12 @@ target_link_libraries (${PROJECT_NAME} ${LIBS} kapi ${CURSES_LIBRARIES})
 find_package(Boost COMPONENTS unit_test_framework REQUIRED)
 include_directories (${Boost_INCLUDE_DIRS})
 
-# #I like to keep test files in a separate source directory called test
-# file(GLOB TEST_SRCS RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} test/*.cpp)
-
-SET (TEST_SRCS test/order_test.cpp
-  test/api_test.cpp)
+SET (TEST_SRCS test/order_test.cpp)
+# Note: test/api_test.cpp, containts test that talks to the api, should never be enabled by default
 
 # Run through each source
 foreach(testsrc ${TEST_SRCS})
   #extract the filename without an extension (name_we)
-
   get_filename_component(testname ${testsrc} NAME_WE)
 
   #add compile target
@@ -63,16 +58,8 @@ foreach(testsrc ${TEST_SRCS})
   #link to boost libraries and your targets and dependencies
   target_link_libraries(${testname} PRIVATE ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY} ${libs} kapi)
 
-  #finally add it to test execution -
-  #notice the working_directory and command
+  # add it to test execution -
   add_test(NAME ${testname}
-    COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/testbin/${testname} )
+    COMMAND ${testname} --log_level=all )
 
-   # add_custom_command(
-   #   target ${testname}
-   #   comment "run tests"
-   #   post_build 
-   #   #working_directory ${CMAKE_CURRENT_SOURCE_DIR}/testbin
-   #   command ${CMAKE_CTEST_COMMAND}  --output-on-failure
-   #   )
 endforeach(testsrc)
