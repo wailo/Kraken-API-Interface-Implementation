@@ -4,7 +4,7 @@
 #include "kraken/kclient.hpp"
 #include "order.hpp"
 
-#include <boost/optional.hpp>
+#include <optional>
 #include <unordered_map>
 
 class kraken_interface {
@@ -81,10 +81,10 @@ public:
   //!
   //!
   */
-  boost::optional<JSONNode>
-  get_asset_info(const boost::optional<std::string> &info,
-                 const boost::optional<std::string> &aclass,
-                 const boost::optional<std::string> &asset) const;
+  std::optional<JSONNode>
+  get_asset_info(const std::optional<std::string> &info,
+                 const std::optional<std::string> &aclass,
+                 const std::optional<std::string> &asset) const;
 
   /*
   //! *** //! Get tradable asset pairs
@@ -124,9 +124,9 @@ public:
   //! maker/taker, they will only be given in "fees".
   //!
   */
-  boost::optional<JSONNode>
-  get_tradable_pairs(const boost::optional<std::string> &info,
-                     const boost::optional<std::string> &pair) const;
+  std::optional<JSONNode>
+  get_tradable_pairs(const std::optional<std::string> &info,
+                     const std::optional<std::string> &pair) const;
 
   /*
   //! *** //! Get ticker information
@@ -186,9 +186,8 @@ public:
   //!     bids = bid side array of array entries(price, volume, timestamp)
   //!
   */
-  boost::optional<JSONNode>
-  get_order_book(const std::string &pair,
-                 const boost::optional<int> &count) const;
+  std::optional<JSONNode> get_order_book(const std::string &pair,
+                                         const std::optional<int> &count) const;
 
   /*
   //! *** //! Get recent trades
@@ -265,7 +264,7 @@ public:
 
   typedef std::vector<std::unordered_map<std::string, std::string>>
       order_data_t;
-  boost::
+  std::
       optional<order_data_t>
 
       /*
@@ -327,8 +326,8 @@ public:
       as 5, even if the underlying currency has a scale of 8.
       //!
       */
-      get_open_orders(const boost::optional<std::string> &trades,
-                      const boost::optional<std::string> &userref) const;
+      get_open_orders(const std::optional<std::string> &trades,
+                      const std::optional<std::string> &userref) const;
 
   /*
   //! *** //! Get closed orders
@@ -657,7 +656,7 @@ public:
   //! - Note:
   //!
   */
-  boost::optional<JSONNode> add_standard_order(const order &order_);
+  std::optional<JSONNode> add_standard_order(const order &order_);
 
   /*
   //! *** //! Cancel open order
@@ -672,7 +671,7 @@ public:
   //! - Note: txid may be a user reference id.
   //!
   */
-  boost::optional<JSONNode> cancel_open_order(const std::string &txid);
+  std::optional<JSONNode> cancel_open_order(const std::string &txid);
 
   //! ////////////////////////////////////////////////////////////////////////////////////////////////////
   //! ** id="private-user-funding" Private user funding

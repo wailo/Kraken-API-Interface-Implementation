@@ -103,25 +103,25 @@ std::string kraken_interface::get_server_time() const {
   return m_kapi.public_method("Time", in);
 }
 
-boost::optional<JSONNode> kraken_interface::get_asset_info(
-    const boost::optional<std::string> &info,
-    const boost::optional<std::string> &aclass,
-    const boost::optional<std::string> &asset) const {
+std::optional<JSONNode> kraken_interface::get_asset_info(
+    const std::optional<std::string> &info,
+    const std::optional<std::string> &aclass,
+    const std::optional<std::string> &asset) const {
   Input in;
   if (info) {
-    in["info"] = info.get();
+    in["info"] = info.value();
   }
 
   if (aclass) {
-    in["alcass"] = aclass.get();
+    in["alcass"] = aclass.value();
   }
 
   if (asset) {
-    in["asset"] = asset.get();
+    in["asset"] = asset.value();
   }
 
   auto const json_data = m_kapi.public_method("Assets", in);
-  boost::optional<JSONNode> root;
+  std::optional<JSONNode> root;
 
   try {
     root = libjson::parse(json_data);
@@ -132,26 +132,26 @@ boost::optional<JSONNode> kraken_interface::get_asset_info(
   return root;
 }
 
-boost::optional<JSONNode> kraken_interface::get_tradable_pairs(
-    const boost::optional<std::string> &info,
-    const boost::optional<std::string> &pair) const {
+std::optional<JSONNode> kraken_interface::get_tradable_pairs(
+    const std::optional<std::string> &info,
+    const std::optional<std::string> &pair) const {
   Input in;
   if (info) {
-    in["info"] = info.get();
+    in["info"] = info.value();
   }
 
   if (pair) {
-    in["pair"] = pair.get();
+    in["pair"] = pair.value();
   }
 
   std::string json_data = m_kapi.public_method("AssetPairs", in);
-  boost::optional<JSONNode> root;
+  std::optional<JSONNode> root;
 
   try {
     root = libjson::parse(json_data);
 
     // Check if there are data
-    const auto &error = root.get().at("error");
+    const auto &error = root.value().at("error");
   }
 
   catch (...) {
@@ -169,17 +169,17 @@ std::string kraken_interface::get_ohlc_data(const Input &in) const {
   return m_kapi.public_method("OHLC", in);
 }
 
-boost::optional<JSONNode>
+std::optional<JSONNode>
 kraken_interface::get_order_book(const std::string &pair,
-                                 const boost::optional<int> &count) const {
+                                 const std::optional<int> &count) const {
   Input in{{"pair", pair}};
 
   if (count) {
-    in.insert(make_pair("count", std::to_string(count.get())));
+    in.insert(make_pair("count", std::to_string(count.value())));
   }
 
   auto const json_data = m_kapi.public_method("Depth", in);
-  boost::optional<JSONNode> root;
+  std::optional<JSONNode> root;
 
   try {
     root = libjson::parse(json_data);
@@ -213,17 +213,16 @@ kraken_interface::get_trade_balance(const std::string &aclass,
   return m_kapi.private_method("TradeBalance", in);
 }
 
-boost::optional<kraken_interface::order_data_t>
-kraken_interface::get_open_orders(
-    const boost::optional<std::string> &trades,
-    const boost::optional<std::string> &userref) const {
+std::optional<kraken_interface::order_data_t> kraken_interface::get_open_orders(
+    const std::optional<std::string> &trades,
+    const std::optional<std::string> &userref) const {
   Input in;
   if (trades) {
-    in.insert(make_pair("trades", trades.get()));
+    in.insert(make_pair("trades", trades.value()));
   }
 
   if (userref) {
-    in.insert(make_pair("userref", userref.get()));
+    in.insert(make_pair("userref", userref.value()));
   }
 
   auto const json_data = m_kapi.private_method("OpenOrders", in);
@@ -233,13 +232,13 @@ kraken_interface::get_open_orders(
     root = libjson::parse(json_data);
   } catch (...) {
     std::cerr << "Failed to parse json data: " << json_data << '\n';
-    return boost::none;
+    return std::nullopt;
   }
 
   auto const &result = root.at("result");
   // Check for errors.
   if (!root.at("error").empty() || result.empty()) {
-    return boost::none;
+    return std::nullopt;
   }
 
   auto const &open_orders_data = result.at("open");
@@ -312,51 +311,51 @@ std::string kraken_interface::get_trade_volume(const Input &in) const {
   return m_kapi.private_method("TradeVolume", in);
 }
 
-boost::optional<JSONNode>
+std::optional<JSONNode>
 kraken_interface::add_standard_order(const order &order_) {
 
   auto const &in = order_to_kraken_order(order_);
-  boost::optional<JSONNode> root;
+  std::optional<JSONNode> root;
   std::string json_data = m_kapi.private_method("AddOrder", in);
 
   try {
     root = libjson::parse(json_data);
 
     // Check if there are data
-    const auto &errors = root.get().at("error");
+    const auto &errors = root.value().at("error");
     if (!errors.empty()) {
       std::cerr << "Error in json data: " << json_data << '\n';
-      return boost::none;
+      return std::nullopt;
     }
     // if (error == "[\"EService:Unavailable\"]") {
     //}
 
   } catch (...) {
     std::cerr << "Failed to parse json data: " << json_data << '\n';
-    return boost::none;
+    return std::nullopt;
   }
 
   return root;
 }
 
-boost::optional<JSONNode>
+std::optional<JSONNode>
 kraken_interface::cancel_open_order(const std::string &txid) {
   const Input in{{"txid", txid}};
   const auto json_data = m_kapi.private_method("CancelOrder", in);
-  boost::optional<JSONNode> root;
+  std::optional<JSONNode> root;
   try {
     root = libjson::parse(json_data);
 
     // Check if there are data
-    const auto &errors = root.get().at("error");
+    const auto &errors = root.value().at("error");
     if (!errors.empty()) {
       std::cerr << "Error in json data: " << json_data << '\n';
-      return boost::none;
+      return std::nullopt;
     }
 
   } catch (...) {
     std::cerr << "Failed to parse json data: " << json_data << '\n';
-    return boost::none;
+    return std::nullopt;
   }
 
   return root;

@@ -22,17 +22,17 @@ BOOST_AUTO_TEST_CASE(get_order_book) {
   kraken_interface api_intfc(key, secret);
   const auto root = api_intfc.get_order_book("XXBTZEUR", 5);
 
-  BOOST_REQUIRE_EQUAL(root == boost::none, false);
+  BOOST_REQUIRE_EQUAL(root == std::nullopt, false);
 
   // Check for errors.
-  BOOST_CHECK_EQUAL(root.get().at("error").empty(), true);
+  BOOST_CHECK_EQUAL(root.value().at("error").empty(), true);
 
   // // append errors to output string stream
   // for (auto it = root["error"].begin(); it != root["error"].end(); ++it)
   //    oss << endl << " * " << libjson::to_std_string(it->as_string());
 
   // Check if there are data
-  BOOST_CHECK_EQUAL(!root.get().at("result").empty(), true);
+  BOOST_CHECK_EQUAL(!root.value().at("result").empty(), true);
 
   // const string& pair = i.at("pair");
   // JSONNode& result = root["result"];
@@ -51,44 +51,44 @@ BOOST_AUTO_TEST_CASE(get_asset_info) {
 
   kraken_interface api_intfc(key, secret);
   ;
-  auto const &root = api_intfc.get_asset_info(boost::optional<std::string>(),
-                                              boost::optional<std::string>(),
-                                              boost::optional<std::string>());
+  auto const &root = api_intfc.get_asset_info(std::optional<std::string>(),
+                                              std::optional<std::string>(),
+                                              std::optional<std::string>());
 
-  BOOST_REQUIRE_EQUAL(root == boost::none, false);
+  BOOST_REQUIRE_EQUAL(root == std::nullopt, false);
 
   // Check for errors.
-  BOOST_CHECK_EQUAL(root.get().at("error").empty(), true);
+  BOOST_CHECK_EQUAL(root.value().at("error").empty(), true);
 
   // Check if there are data
-  BOOST_CHECK_EQUAL(!root.get().at("result").empty(), true);
+  BOOST_CHECK_EQUAL(!root.value().at("result").empty(), true);
 }
 
 BOOST_AUTO_TEST_CASE(get_tradable_pairs) {
 
   kraken_interface api_intfc(key, secret);
   ;
-  auto root = api_intfc.get_tradable_pairs(boost::optional<std::string>(),
-                                           boost::optional<std::string>());
+  auto root = api_intfc.get_tradable_pairs(std::optional<std::string>(),
+                                           std::optional<std::string>());
 
-  BOOST_REQUIRE_EQUAL(root == boost::none, false);
+  BOOST_REQUIRE_EQUAL(root == std::nullopt, false);
   // Check for errors.
-  BOOST_CHECK_EQUAL(root.get().at("error").empty(), true);
+  BOOST_CHECK_EQUAL(root.value().at("error").empty(), true);
 
   // Check if there are data
-  BOOST_CHECK_EQUAL(!root.get().at("result").empty(), true);
+  BOOST_CHECK_EQUAL(!root.value().at("result").empty(), true);
 }
 
 BOOST_AUTO_TEST_CASE(get_open_orders) {
 
   kraken_interface api_intfc(key, secret);
   ;
-  auto result = api_intfc.get_open_orders(boost::optional<std::string>(),
-                                          boost::optional<std::string>());
+  auto result = api_intfc.get_open_orders(std::optional<std::string>(),
+                                          std::optional<std::string>());
 
-  BOOST_REQUIRE_EQUAL(result == boost::none, false);
+  BOOST_REQUIRE_EQUAL(result == std::nullopt, false);
 
-  for (auto const &row : result.get()) {
+  for (auto const &row : result.value()) {
     for (auto const &val : row) {
       std::cout << val.first << " -- " << val.second << std::endl;
     }
@@ -104,24 +104,24 @@ BOOST_AUTO_TEST_CASE(add_standard_order) {
   kraken_interface api_intfc(key, secret);
   ;
   int tries = 3;
-  boost::optional<JSONNode> root;
+  std::optional<JSONNode> root;
 
-  auto fn = [&]() -> boost::optional<JSONNode> {
+  auto fn = [&]() -> std::optional<JSONNode> {
     return api_intfc.add_standard_order(order_);
   };
   root = api_intfc.send_api_request(3, fn);
 
-  BOOST_REQUIRE_EQUAL(root == boost::none, false);
-  // std::cout << root.get().at("error").as_string() << std::endl;
-  // std::cout << root.get().at("result").as_string() << std::endl;
-  BOOST_CHECK_EQUAL(!root.get().at("result").empty(), true);
+  BOOST_REQUIRE_EQUAL(root == std::nullopt, false);
+  // std::cout << root.value().at("error").as_string() << std::endl;
+  // std::cout << root.value().at("result").as_string() << std::endl;
+  BOOST_CHECK_EQUAL(!root.value().at("result").empty(), true);
 }
 
 BOOST_AUTO_TEST_CASE(retry) {
 
   auto fn = []() {
     std::cout << "test" << std::endl;
-    return boost::optional<JSONNode>();
+    return std::optional<JSONNode>();
   };
 
   kraken_interface api_intfc(key, secret);

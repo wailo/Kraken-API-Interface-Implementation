@@ -37,10 +37,9 @@ find_package(Curses REQUIRED)
 #-------------------------------------------------------------------------------
 FILE(GLOB SRCFILES src/*.cpp)
 add_executable (${PROJECT_NAME} ${SRCFILES})
-set_target_properties (${PROJECT_NAME} PROPERTIES 
-  COMPILE_DEFINITIONS_DEBUG "JSON_DEBUG;JSON_SAFE;JSON_ISO_STRICT")
+set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_DEFINITIONS_DEBUG "JSON_DEBUG;JSON_SAFE;JSON_ISO_STRICT")
+set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_DEFINITIONS_RELEASE "NDEBUG;JSON_SAFE;JSON_ISO_STRICT")
 target_link_libraries (${PROJECT_NAME} ${LIBS} kapi ${CURSES_LIBRARIES})
-
 
 #Prep ourselves for compiling boost
 find_package(Boost COMPONENTS unit_test_framework REQUIRED)
