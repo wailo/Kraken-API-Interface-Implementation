@@ -1,6 +1,0 @@
-[submodule "krakenapi"]
-	path = krakenapi
-	url = https://github.com/voidloop/krakenapi.git
-[submodule "binance_python"]
-	path = binance_python
-	url = ./binance_python/
