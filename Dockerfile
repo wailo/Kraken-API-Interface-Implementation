@@ -1,5 +1,5 @@
 
-FROM debian:stable-slim
+FROM debian:buster-slim
 # linux compilers
 RUN apt-get update -y && apt-get install -y g++ libncurses-dev
 # Utilities
