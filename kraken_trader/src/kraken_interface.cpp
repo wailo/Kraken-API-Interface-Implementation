@@ -126,6 +126,8 @@ std::optional<JSONNode> kraken_interface::get_asset_info(
   try {
     root = libjson::parse(json_data);
   } catch (...) {
+    std::cerr << "Failed to parse json data: " << json_data << '\n';
+    return std::nullopt;
   }
 
   // TODO: Implement generic while loop here
@@ -152,9 +154,9 @@ std::optional<JSONNode> kraken_interface::get_tradable_pairs(
 
     // Check if there are data
     const auto &error = root.value().at("error");
-  }
-
-  catch (...) {
+  } catch (...) {
+    std::cerr << "Failed to parse json data: " << json_data << '\n';
+    return std::nullopt;
   }
 
   return root;
@@ -184,6 +186,8 @@ kraken_interface::get_order_book(const std::string &pair,
   try {
     root = libjson::parse(json_data);
   } catch (...) {
+    std::cerr << "Failed to parse json data: " << json_data << '\n';
+    return std::nullopt;
   }
 
   return root;
