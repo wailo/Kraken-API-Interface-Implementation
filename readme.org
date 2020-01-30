@@ -1,4 +1,4 @@
-* Kraken C++ API Interface implementation example
+* Kraken C++ API Interface implementation example [[https://travis-ci.com/wailo/Kraken-API-Interface-Implementation.svg?branch=master]]
 
 - This is an implementation examaple of kraken C++ API interface. The code is compile inside a docker container.
 - Depedency lib (libjson) has been modified to be compatilbe with C++17
