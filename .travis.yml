@@ -7,4 +7,6 @@ before_install:
   - docker build . -t kraken
 
 script:
-  - docker run --rm kraken sh -c "mkdir build && cd build && CC=gcc CXX=g++ cmake -G \"Ninja\" .. && cmake --build . && cmake --build . --target test"
+  - cd $($TRAVIS_BUILD_DIR) && \
+  docker run --rm -v $(pwd):$(pwd) \
+  kraken sh -c "mkdir build && cd build && CC=gcc CXX=g++ cmake -G \"Ninja\" .. && cmake --build . && cmake --build . --target test"
